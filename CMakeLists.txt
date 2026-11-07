@@ -5,11 +5,11 @@ add_executable(main)
 
 target_sources(main
 PRIVATE
-    _main/main.c
+    src/main.c
 )
 
 target_include_directories(main PRIVATE
     .
-    _main
+    src
     coms
 )

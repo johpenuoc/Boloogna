@@ -1,0 +1,4 @@
+lib print("He (said \"Bye\"");
+
+name = "john" # this is my name #
+a = 4;

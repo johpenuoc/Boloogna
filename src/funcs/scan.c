@@ -247,12 +247,10 @@ List tokenize(List l)
                 
                     for (int j = 0; j < strlen(tokens[i - 1].stor); ++j)
                         {
-                            printf("dafuq %c\n", tokens[i - 1].stor[j]);
                             number[j] = tokens[i - 1].stor[j];
                             
                             //printf("%s\n", number);
                         }
-                    printf("%s\n", number);
                     
                     len++;
                     number = realloc(number, sizeof(char) * len);
@@ -263,12 +261,8 @@ List tokenize(List l)
                     
                     for (int j = 0; j < str2_len; ++j)
                         {
-                            //printf("dafuq %c\n", tokens[i + 1].stor[j]);
                             number[len + j] = tokens[i + 1].stor[j];
-                            
-                            printf("%s\n", number);
                         }
-                    printf("%s\n", number);
                     len += str2_len;
                     number[len] = '\0';
                     
@@ -276,6 +270,8 @@ List tokenize(List l)
                     strcpy(tokens[i - 1].stor, number);
                     shift_down(tokens, i + 1, 2, token_cnt);
                     token_cnt -= 2;
+                    
+                    free(number);
                     
                 }
             

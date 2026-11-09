@@ -75,6 +75,16 @@ List preprocessor(FILE *file)
     return (List){ .element = buf, .length = cnt };
 }
 
+// use after string-token fix
+char *incr(char *curr, int *len, char indv)
+{
+    curr[(*len) - 1] = indv;
+    (*len)++;
+    curr = realloc(curr, sizeof(char) * (*len));
+    
+    return curr;
+}
+
 List tokenize(List l)
 {
     Token *tokens = malloc(sizeof(Token) * 1);
@@ -82,6 +92,7 @@ List tokenize(List l)
     
     char *curr = malloc(sizeof(char) * 1);
     int len = 1;
+    int *len_ptr = &len;
     
     bool in_mode = false;
     char mode_type;
@@ -89,27 +100,25 @@ List tokenize(List l)
     char *indv = (char *)l.element;
     
     for (int i = 0; i < l.length; ++i)
-        {
-            char print_str[len + 1];
-            strncpy(print_str, curr, len);
-            print_str[len - 1] = '\0';
-            //printf("%s\n", print_str);
-            
+        {   
             if (!in_mode && (indv[i] == '"' || indv[i] == '#'))
                 {
                     in_mode = true;
                     mode_type = indv[i];
+                    
+                    curr = curr = incr(curr, len_ptr, indv[i]);
                 }
             else if (in_mode && indv[i] == mode_type && indv[i - 1] != '\\')
                 {
                     in_mode = false;
+                    curr = incr(curr, len_ptr, indv[i]);
                 }
                 
             else if (!in_mode && indv[i] == ' ' && indv[i - 1] != ' ')
                 {   
-                    curr[len - 1] = '\0';
+                    curr[(*len_ptr) - 1] = '\0';
                     tokens[token_cnt - 1].stor = curr;
-                    tokens[token_cnt - 1].len = len - 1;
+                    tokens[token_cnt - 1].len = (*len_ptr) - 1;
                     
                     if (strcmp(curr, "(") == 0) tokens[token_cnt - 1].type = LPAREN;
                     else if (strcmp(curr, ")") == 0) tokens[token_cnt - 1].type = RPAREN;
@@ -134,8 +143,9 @@ List tokenize(List l)
                     
                     else
                         {
-                            if (only_numbers(curr, len - 1)) tokens[token_cnt - 1].type = NUMBER;
-                            else if (curr[0] == '"' && curr[len - 1] == '"') tokens[token_cnt - 1].type = STRING;
+                            if (only_numbers(curr, (*len_ptr) - 1)) tokens[token_cnt - 1].type = NUMBER;
+                            else if (curr[0] == '#' && curr[(*len_ptr) - 2] == '#') tokens[token_cnt - 1].type = COMMENT;}
+                            else if (curr[0] == '"' && curr[(*len_ptr) - 2] == '"') tokens[token_cnt - 1].type = STRING;
                             else
                                 {
                                     if (strcmp(curr, "&") == 0) tokens[token_cnt - 1].type = AND;
@@ -153,24 +163,16 @@ List tokenize(List l)
                         }
                         
                     curr = malloc(sizeof(char) * 1);
-                    len = 1;
+                    *len_ptr = 1;
                     
                     token_cnt++;
                     tokens = realloc(tokens, sizeof(Token) * token_cnt);
                 }
             else
                 {
-                    if (indv[i] != ' ' && !in_mode)
+                    if ((indv[i] != ' ' && !in_mode) || in_mode) 
                         {
-                            curr[len - 1] = indv[i];
-                            len++;
-                            curr = realloc(curr, sizeof(char) * len);
-                        }
-                    else if (in_mode)
-                        {
-                            curr[len - 1] = indv[i];
-                            len++;
-                            curr = realloc(curr, sizeof(char) * len);
+                            curr = incr(curr, len_ptr, indv[i]);;
                         }
                 }
         }
@@ -178,7 +180,5 @@ List tokenize(List l)
     free(curr);
     free(l.element);
     
-    printf("---> %s\n", tokens[0].stor);
-    
-    return (List){ .element = tokens, .length = token_cnt - 1};
+    return (List){ .element = tokens, .length = token_cnt};
 }

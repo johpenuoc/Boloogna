@@ -59,12 +59,15 @@ bool is_in(char *string, char c, int string_length)
 
 bool only_numbers(char *string, int string_length)
 {
+    if (string[string_length - 1] == '.') return false;
+    
     for (int i = 0; i < string_length; ++i)
         {
             if (is_in(ALPHA, string[i], 43))
                 {
                     return false;
                 }
+            
         }
     
     return true;

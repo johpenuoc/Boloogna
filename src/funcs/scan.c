@@ -85,6 +85,51 @@ char *incr(char *curr, int *len, char indv)
     return curr;
 }
 
+void shift_down(Token *tokens, int start, int jump, int tokens_length)
+{
+    // not sure why it has to be 'start - 1'\
+    // not gonna bother knowing, just let it be
+    for (int i = start - 1; i < tokens_length - jump; ++i)
+        {
+            tokens[i] = tokens[i + jump];
+        }
+    
+    tokens = realloc(tokens, sizeof(Token) * tokens_length - jump);
+}
+
+// i know this is all messy, but this is my second project in C
+// .. im a python guy i guess
+int combine_chars(Token *tokens, int token_cnt, int i)
+{
+    char *combined = malloc(sizeof(char) * 1);
+    int incr = 0;
+    while (tokens[i - 1].stor[incr] != '\0')
+        {
+            combined[incr] = tokens[i - 1].stor[incr];
+            incr++;
+            combined = realloc(combined, sizeof(char) * (incr + 1));
+        }
+    //combined[incr] = '.';
+    //incr++;
+    //combined = realloc(combined, sizeof(char) * (incr + 1));
+    int incr2 = 0;
+    while (tokens[i + 1].stor[incr] != '\0')
+        {
+            combined[incr] = tokens[i + 1].stor[incr2];
+            incr++;
+            incr2++;
+            combined = realloc(combined, sizeof(char) * (incr + 1));
+        }
+    combined[incr] = '\0';
+    
+    tokens[i - 1].stor = combined;
+    
+    //shift_down(tokens, i + 1, 2 + j, token_cnt);
+    token_cnt -= 2;
+    
+    return token_cnt;
+}
+
 List tokenize(List l)
 {
     Token *tokens = malloc(sizeof(Token) * 1);
@@ -115,8 +160,8 @@ List tokenize(List l)
                 }
                 
             else if (!in_mode && indv[i] == ' ' && indv[i - 1] != ' ')
-                {   
-                    curr[(*len_ptr) - 1] = '\0';
+                {    
+                    curr[(*len_ptr) - 1] = '\0';  
                     tokens[token_cnt - 1].stor = curr;
                     tokens[token_cnt - 1].len = (*len_ptr) - 1;
                     
@@ -144,7 +189,7 @@ List tokenize(List l)
                     else
                         {
                             if (only_numbers(curr, (*len_ptr) - 1)) tokens[token_cnt - 1].type = NUMBER;
-                            else if (curr[0] == '#' && curr[(*len_ptr) - 2] == '#') tokens[token_cnt - 1].type = COMMENT;}
+                            else if (curr[0] == '#' && curr[(*len_ptr) - 2] == '#') tokens[token_cnt - 1].type = COMMENT;
                             else if (curr[0] == '"' && curr[(*len_ptr) - 2] == '"') tokens[token_cnt - 1].type = STRING;
                             else
                                 {
@@ -179,6 +224,65 @@ List tokenize(List l)
         
     free(curr);
     free(l.element);
+    
+    // after tokenizing, there are still some things to clear up
+    // we firstly need to combine 'DECIMAL's with 'NUMBER's. 
+    // this will be a simple gathering.
+    
+    // a number may start with a 'DECIMAL', '.', provided that
+    // the previous token was non-terminal
+    int token_cnt_change;
+    char *number;
+    int incr = 0;
+    for (int i = 1; i < token_cnt - 2; ++i)
+        {
+            enum _TYPE_ currt = tokens[i].type;
+            enum _TYPE_ prevt = tokens[i - 1].type;
+            enum _TYPE_ nextt = tokens[i + 1].type;
+            
+            if (prevt == NUMBER && currt == DECIMAL && nextt == NUMBER)
+                {
+                    int len = strlen(tokens[i - 1].stor);
+                    number = malloc(sizeof(char) * len);
+                
+                    for (int j = 0; j < strlen(tokens[i - 1].stor); ++j)
+                        {
+                            printf("dafuq %c\n", tokens[i - 1].stor[j]);
+                            number[j] = tokens[i - 1].stor[j];
+                            
+                            //printf("%s\n", number);
+                        }
+                    printf("%s\n", number);
+                    
+                    len++;
+                    number = realloc(number, sizeof(char) * len);
+                    number[len - 1] = '.';
+                    
+                    int str2_len = strlen(tokens[i + 1].stor);
+                    number = realloc(number, sizeof(char) * (len + str2_len));
+                    
+                    for (int j = 0; j < str2_len; ++j)
+                        {
+                            //printf("dafuq %c\n", tokens[i + 1].stor[j]);
+                            number[len + j] = tokens[i + 1].stor[j];
+                            
+                            printf("%s\n", number);
+                        }
+                    printf("%s\n", number);
+                    len += str2_len;
+                    number[len] = '\0';
+                    
+                    tokens[i - 1].stor = realloc(tokens[i - 1].stor, sizeof(char) * len);
+                    strcpy(tokens[i - 1].stor, number);
+                    shift_down(tokens, i + 1, 2, token_cnt);
+                    token_cnt -= 2;
+                    
+                }
+            
+            
+            
+        }
+        
     
     return (List){ .element = tokens, .length = token_cnt};
 }

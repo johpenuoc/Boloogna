@@ -87,7 +87,7 @@ char *incr(char *curr, int *len, char indv)
 
 void shift_down(Token *tokens, int start, int jump, int tokens_length)
 {
-    // not sure why it has to be 'start - 1'\
+    // not sure why it has to be 'start - 1'
     // not gonna bother knowing, just let it be
     for (int i = start - 1; i < tokens_length - jump; ++i)
         {
@@ -115,7 +115,7 @@ List tokenize(FILE *file)
     
     for (int i = 0; i < l.length; ++i)
         {   
-            if (!in_mode && (indv[i] == '"' || indv[i] == '#' || indv[i] == '\''))
+            if (!in_mode && (indv[i] == '"' || indv[i] == '#'))
                 {
                     in_mode = true;
                     mode_type = indv[i];

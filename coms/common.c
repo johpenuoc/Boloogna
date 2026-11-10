@@ -1,9 +1,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "coms/common.h"
 
-char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"";
 char *TERM = "(){},.:;+-*/=^><";
 char *MODE = "\"#\'";
 
@@ -63,7 +65,7 @@ bool only_numbers(char *string, int string_length)
     
     for (int i = 0; i < string_length; ++i)
         {
-            if (is_in(ALPHA, string[i], 43))
+            if (is_in(ALPHA, string[i], strlen(ALPHA)))
                 {
                     return false;
                 }

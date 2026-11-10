@@ -5,9 +5,9 @@
 
 #include "coms/common.h"
 
-char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"";
-char *TERM = "(){},.:;+-*/=^><";
-char *MODE = "\"#\'";
+char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"!=+-/*^";
+char *TERM = "(){},.:;+-*/=^><!?";
+char *MODE = "\"#";
 
 enum _TYPE_ 
 {
@@ -17,7 +17,7 @@ enum _TYPE_
     POWER, GTHAN, LTHAN,
     
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
-    LTHAN_OR_EQUAL_TO, 
+    LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
     
     STRING, IDENTIFIER, NUMBER, COMMENT,
     

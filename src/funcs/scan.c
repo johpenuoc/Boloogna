@@ -75,7 +75,6 @@ List preprocessor(FILE *file)
     return (List){ .element = buf, .length = cnt };
 }
 
-// use after string-token fix
 char *incr(char *curr, int *len, char indv)
 {
     curr[(*len) - 1] = indv;
@@ -95,6 +94,85 @@ void shift_down(Token *tokens, int start, int jump, int tokens_length)
         }
     
     tokens = realloc(tokens, sizeof(Token) * tokens_length - jump);
+}
+
+void is_float(Token *tokens, int *token_cnt)
+{
+    int token_cnt_change;
+    char *number;
+    int incr = 0;
+    for (int i = 1; i < (*token_cnt) - 2; ++i)
+        {
+            enum _TYPE_ currt = tokens[i].type;
+            enum _TYPE_ prevt = tokens[i - 1].type;
+            enum _TYPE_ nextt = tokens[i + 1].type;
+            
+            if (prevt == NUMBER && currt == DECIMAL && nextt == NUMBER)
+                {
+                    int len = strlen(tokens[i - 1].stor);
+                    number = malloc(sizeof(char) * len);
+                
+                    for (int j = 0; j < strlen(tokens[i - 1].stor); ++j) number[j] = tokens[i - 1].stor[j];
+                    
+                    len++;
+                    number = realloc(number, sizeof(char) * len);
+                    number[len - 1] = '.';
+                    
+                    int str2_len = strlen(tokens[i + 1].stor);
+                    number = realloc(number, sizeof(char) * (len + str2_len));
+                    
+                    for (int j = 0; j < str2_len; ++j) number[len + j] = tokens[i + 1].stor[j];
+                    len += str2_len;
+                    number[len] = '\0';
+                    
+                    tokens[i - 1].stor = realloc(tokens[i - 1].stor, sizeof(char) * len);
+                    strcpy(tokens[i - 1].stor, number);
+                    shift_down(tokens, i + 1, 2, (*token_cnt));
+                    (*token_cnt) -= 2;
+                    
+                    free(number);
+                    
+                }  
+        }
+}
+
+void combine_tokens(Token *tokens, int *token_cnt, enum _TYPE_ T1, enum _TYPE_ T2, enum _TYPE_ MT)
+{
+    int token_cnt_change;
+    char *number;
+    int incr = 0;
+    for (int i = 1; i < (*token_cnt) - 1; ++i)
+        {
+            enum _TYPE_ currt = tokens[i].type;
+            enum _TYPE_ prevt = tokens[i - 1].type;
+            
+            if (prevt == T1 && currt == T2)
+                {
+                    int len = strlen(tokens[i - 1].stor);
+                    number = malloc(sizeof(char) * len);
+                
+                    for (int j = 0; j < strlen(tokens[i - 1].stor); ++j) number[j] = tokens[i - 1].stor[j];
+                    
+                    //len++;
+                    
+                    int str2_len = strlen(tokens[i].stor);
+                    number = realloc(number, sizeof(char) * (len + str2_len));
+                    
+                    for (int j = 0; j < str2_len; ++j) number[len + j] = tokens[i].stor[j];
+                    len += str2_len;
+                    number[len] = '\0';
+                    
+                    tokens[i - 1].stor = realloc(tokens[i - 1].stor, sizeof(char) * len);
+                    strcpy(tokens[i - 1].stor, number);
+                    shift_down(tokens, i + 1, 1, (*token_cnt));
+                    (*token_cnt) -= 1;
+                    
+                    tokens[i - 1].type = MT;
+                    
+                    free(number);
+                    
+                }  
+        }
 }
 
 List tokenize(FILE *file)
@@ -154,6 +232,7 @@ List tokenize(FILE *file)
                     else if (strcmp(curr, "==") == 0) tokens[token_cnt - 1].type = EQUIVALENT;
                     else if (strcmp(curr, ">=") == 0) tokens[token_cnt - 1].type = GTHAN_OR_EQUAL_TO;
                     else if (strcmp(curr, "<=") == 0) tokens[token_cnt - 1].type = LTHAN_OR_EQUAL_TO;
+                    else if (strcmp(curr, "!=") == 0) tokens[token_cnt - 1].type = NOT_EQUAL_TO;
                     
                     else
                         {
@@ -186,14 +265,13 @@ List tokenize(FILE *file)
                 {
                     if ((indv[i] != ' ' && !in_mode) || in_mode) 
                         {
-                            curr = incr(curr, len_ptr, indv[i]);;
+                            curr = incr(curr, len_ptr, indv[i]);
                         }
                 }
         }
         
     free(curr);
     free(l.element);
-    
     
     // after tokenizing, there are still some things to clear up
     // we firstly need to combine 'DECIMAL's with 'NUMBER's. 
@@ -202,42 +280,15 @@ List tokenize(FILE *file)
     // a decimal cannot start with a '.', for example:
     // .396 is not allowed. currently, you must type
     // '0.396'
-    int token_cnt_change;
-    char *number;
-    int incr = 0;
-    for (int i = 1; i < token_cnt - 2; ++i)
-        {
-            enum _TYPE_ currt = tokens[i].type;
-            enum _TYPE_ prevt = tokens[i - 1].type;
-            enum _TYPE_ nextt = tokens[i + 1].type;
-            
-            if (prevt == NUMBER && currt == DECIMAL && nextt == NUMBER)
-                {
-                    int len = strlen(tokens[i - 1].stor);
-                    number = malloc(sizeof(char) * len);
-                
-                    for (int j = 0; j < strlen(tokens[i - 1].stor); ++j) number[j] = tokens[i - 1].stor[j];
-                    
-                    len++;
-                    number = realloc(number, sizeof(char) * len);
-                    number[len - 1] = '.';
-                    
-                    int str2_len = strlen(tokens[i + 1].stor);
-                    number = realloc(number, sizeof(char) * (len + str2_len));
-                    
-                    for (int j = 0; j < str2_len; ++j) number[len + j] = tokens[i + 1].stor[j];
-                    len += str2_len;
-                    number[len] = '\0';
-                    
-                    tokens[i - 1].stor = realloc(tokens[i - 1].stor, sizeof(char) * len);
-                    strcpy(tokens[i - 1].stor, number);
-                    shift_down(tokens, i + 1, 2, token_cnt);
-                    token_cnt -= 2;
-                    
-                    free(number);
-                    
-                }  
-        }
+    
+    // combine decimals and numbers to create floats
+    int *token_cnt_ptr = &token_cnt;
+    is_float(tokens, token_cnt_ptr);
+    
+    
+    // combine symbols like '!' and '=' to create multi-char tokens
+    // like NOT_EQUAL_TO
+    combine_tokens(tokens, token_cnt_ptr, NOT, EQUAL, NOT_EQUAL_TO);
         
     
     return (List){ .element = tokens, .length = token_cnt};

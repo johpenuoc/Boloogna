@@ -199,8 +199,9 @@ List tokenize(FILE *file)
     // we firstly need to combine 'DECIMAL's with 'NUMBER's. 
     // this will be a simple gathering.
     
-    // a number may start with a 'DECIMAL', '.', provided that
-    // the previous token was non-terminal
+    // a decimal cannot start with a '.', for example:
+    // .396 is not allowed. currently, you must type
+    // '0.396'
     int token_cnt_change;
     char *number;
     int incr = 0;
@@ -215,12 +216,7 @@ List tokenize(FILE *file)
                     int len = strlen(tokens[i - 1].stor);
                     number = malloc(sizeof(char) * len);
                 
-                    for (int j = 0; j < strlen(tokens[i - 1].stor); ++j)
-                        {
-                            number[j] = tokens[i - 1].stor[j];
-                            
-                            //printf("%s\n", number);
-                        }
+                    for (int j = 0; j < strlen(tokens[i - 1].stor); ++j) number[j] = tokens[i - 1].stor[j];
                     
                     len++;
                     number = realloc(number, sizeof(char) * len);
@@ -229,10 +225,7 @@ List tokenize(FILE *file)
                     int str2_len = strlen(tokens[i + 1].stor);
                     number = realloc(number, sizeof(char) * (len + str2_len));
                     
-                    for (int j = 0; j < str2_len; ++j)
-                        {
-                            number[len + j] = tokens[i + 1].stor[j];
-                        }
+                    for (int j = 0; j < str2_len; ++j) number[len + j] = tokens[i + 1].stor[j];
                     len += str2_len;
                     number[len] = '\0';
                     
@@ -243,10 +236,7 @@ List tokenize(FILE *file)
                     
                     free(number);
                     
-                }
-            
-            
-            
+                }  
         }
         
     

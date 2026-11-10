@@ -33,29 +33,18 @@ int main(int argc, char **argv)
             printf("Unable to open file '%s'\n", argv[1]);
             return 1;
         }
-        
+          
+    // ============COMPILER STAGES============
     
-    // process the file's data to make it
-    // easier to tokenize
-    List processed = preprocessor(file);
-    
-    // tokenization
-    List token_list = tokenize(processed);
+    List token_list = tokenize(file);
     Token *token = (Token *)(token_list.element);
+    
+    // =======================================
     
     for (int i = 0; i < token_list.length - 1; ++i)
         {
             printf("[%s] \t %s\n", type_names[token[i].type], token[i].stor);
         }
-    
-    
-        
-    free(processed.element);
-    
-    /*for (int i = 0; i < token_cnt; ++i)
-        {
-            printf("Token ID[%d]: %d\n", i, token[i].type);
-        }*/
     
     return 0;
 }

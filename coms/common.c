@@ -5,7 +5,7 @@
 
 char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 char *TERM = "(){},.:;+-*/=^><";
-char *MODE = "\"#";
+char *MODE = "\"#\'";
 
 enum _TYPE_ 
 {

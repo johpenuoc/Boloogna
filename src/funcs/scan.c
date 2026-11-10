@@ -97,41 +97,10 @@ void shift_down(Token *tokens, int start, int jump, int tokens_length)
     tokens = realloc(tokens, sizeof(Token) * tokens_length - jump);
 }
 
-// i know this is all messy, but this is my second project in C
-// .. im a python guy i guess
-int combine_chars(Token *tokens, int token_cnt, int i)
+List tokenize(FILE *file)
 {
-    char *combined = malloc(sizeof(char) * 1);
-    int incr = 0;
-    while (tokens[i - 1].stor[incr] != '\0')
-        {
-            combined[incr] = tokens[i - 1].stor[incr];
-            incr++;
-            combined = realloc(combined, sizeof(char) * (incr + 1));
-        }
-    //combined[incr] = '.';
-    //incr++;
-    //combined = realloc(combined, sizeof(char) * (incr + 1));
-    int incr2 = 0;
-    while (tokens[i + 1].stor[incr] != '\0')
-        {
-            combined[incr] = tokens[i + 1].stor[incr2];
-            incr++;
-            incr2++;
-            combined = realloc(combined, sizeof(char) * (incr + 1));
-        }
-    combined[incr] = '\0';
+    List l = preprocessor(file);
     
-    tokens[i - 1].stor = combined;
-    
-    //shift_down(tokens, i + 1, 2 + j, token_cnt);
-    token_cnt -= 2;
-    
-    return token_cnt;
-}
-
-List tokenize(List l)
-{
     Token *tokens = malloc(sizeof(Token) * 1);
     int token_cnt = 1;
     
@@ -146,7 +115,7 @@ List tokenize(List l)
     
     for (int i = 0; i < l.length; ++i)
         {   
-            if (!in_mode && (indv[i] == '"' || indv[i] == '#'))
+            if (!in_mode && (indv[i] == '"' || indv[i] == '#' || indv[i] == '\''))
                 {
                     in_mode = true;
                     mode_type = indv[i];
@@ -224,6 +193,7 @@ List tokenize(List l)
         
     free(curr);
     free(l.element);
+    
     
     // after tokenizing, there are still some things to clear up
     // we firstly need to combine 'DECIMAL's with 'NUMBER's. 

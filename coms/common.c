@@ -14,12 +14,14 @@ enum _TYPE_
     ADD, SUB, STAR, DIV, EQUAL, 
     POWER, GTHAN, LTHAN,
     
+    AND, OR, NOT, GOTO, UNTIL, IF, ELSE,
+    
+    NUMBER, STRING,
+    
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
     LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
     
-    STRING, IDENTIFIER, NUMBER, COMMENT,
-    
-    AND, OR, NOT, GOTO, UNTIL, IF, ELSE
+    IDENTIFIER, COMMENT,
 };
 
 enum _DATATYPE_
@@ -44,19 +46,27 @@ typedef struct List
     
 } List;
 
-typedef struct Elem
-{
-    // expects only a char*
-    void *elem;
-    
-} Elem;
-
 typedef struct Branch
 {
     enum _TYPE_ parent_type;
     void *children;
     
 } Branch;
+
+
+typedef struct Op
+{
+    
+} Op;
+
+typedef struct Expr
+{
+    union _
+    {
+        
+    };
+    
+} Expr;
 
 bool is_in(char *string, char c, int string_length)
 {

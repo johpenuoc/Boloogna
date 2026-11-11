@@ -13,12 +13,15 @@ const char *type_names[] = {
     "ADD", "SUB", "STAR", "DIV", "EQUAL", 
     "POWER", "GTHAN", "LTHAN",
     
+    "AND", "OR", "NOT", "GOTO", "UNTIL", "IF", "ELSE",
+    
+    "NUMBER", "STRING",
+    
     "EQUIVALENT", "GTHAN_OR_EQUAL_TO", "LTHAN_OR_EQUAL_TO",
     "NOT_EQUAL_TO",
     
-    "STRING", "IDENTIFIER", "NUMBER", "COMMENT",
-    
-    "AND", "OR", "NOT", "GOTO", "UNTIL", "IF", "ELSE"
+    "IDENTIFIER", "COMMENT"
+
 };
 
 

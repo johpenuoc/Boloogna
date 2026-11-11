@@ -175,6 +175,11 @@ void combine_tokens(Token *tokens, int *token_cnt, enum _TYPE_ T1, enum _TYPE_ T
         }
 }
 
+void separate_tokens(Token *tokens, int *token_cnt, enum _TYPE_ MT, enum _TYPE_ T2)
+{
+    
+}
+
 List tokenize(FILE *file)
 {
     List l = preprocessor(file);

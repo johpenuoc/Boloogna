@@ -7,12 +7,12 @@ target_sources(main
 PRIVATE
     src/main.c
     coms/common.c
-    src/funcs/scan.c
+    src/syntax/scan.c
 )
 
 target_include_directories(main PRIVATE
     .
     src
     coms
-    src/funcs
+    src/syntax
 )

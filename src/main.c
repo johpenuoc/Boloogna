@@ -4,7 +4,8 @@
 #include <string.h>
 
 #include "coms/common.h"
-#include "src/funcs/scan.h"
+#include "src/syntax/scan.h"
+#include "src/syntax/parser.h"
 
 const char *type_names[] = {
     "LPAREN", "RPAREN", "LBRACE", "RBRACE",
@@ -42,6 +43,8 @@ int main(int argc, char **argv)
     
     List token_list = tokenize(file);
     Token *token = (Token *)(token_list.element);
+    
+    ast(&token_list);
     
     // =======================================
     

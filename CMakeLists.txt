@@ -8,6 +8,7 @@ PRIVATE
     src/main.c
     coms/common.c
     src/syntax/scan.c
+    src/syntax/parser.c
 )
 
 target_include_directories(main PRIVATE

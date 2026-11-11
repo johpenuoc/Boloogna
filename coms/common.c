@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "coms/common.h"
-
 char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"!=+-/*^";
 char *TERM = "(){},.:;+-*/=^><!?";
 char *MODE = "\"#";
@@ -46,6 +44,20 @@ typedef struct List
     
 } List;
 
+typedef struct Elem
+{
+    // expects only a char*
+    void *elem;
+    
+} Elem;
+
+typedef struct Branch
+{
+    enum _TYPE_ parent_type;
+    void *children;
+    
+} Branch;
+
 bool is_in(char *string, char c, int string_length)
 {
     for (int i = 0; i < string_length; ++i)
@@ -74,3 +86,5 @@ bool only_numbers(char *string, int string_length)
     
     return true;
 }
+
+

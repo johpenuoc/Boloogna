@@ -45,6 +45,19 @@ typedef struct List
     
 } List;
 
+typedef struct Elem
+{
+    // expects only a char*
+    void *elem;
+    
+} Elem;
+
+typedef struct Branch
+{
+    enum _TYPE_ parent_type;
+    void *children;
+    
+} Branch;
 
 bool is_in(char *string, char c, int string_length);
 bool only_numbers(char *string, int string_length);

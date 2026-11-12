@@ -3,7 +3,8 @@
 
 #include "coms/common.h"
 
+NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem);
 
-List ast(List *tokens);
+NodeList stack(List *tokens);
 
 #endif

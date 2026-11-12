@@ -21,13 +21,18 @@ enum _TYPE_
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
     LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
     
-    IDENTIFIER, COMMENT,
+    IDENTIFIER, COMMENT, PROGRAM
 };
 
 enum _DATATYPE_
 {
     _INT_, _STRING_, _CHAR_, _BOOL_,
     _FLOAT_
+};
+
+enum _NODETYPE_
+{
+    NODE, TERMNODE
 };
 
 typedef struct Token
@@ -46,27 +51,34 @@ typedef struct List
     
 } List;
 
-typedef struct Branch
+// ==============================
+// ==============================
+
+typedef struct
 {
-    enum _TYPE_ parent_type;
-    void *children;
+    enum _TYPE_ type;
+    char *stor;
     
-} Branch;
+} Node;
 
-
-typedef struct Op
-{
-    
-} Op;
-
-typedef struct Expr
-{
-    union _
+// a nodelist can either be a single node --> [Node] at index one
+// or it can hold multiple nodes --> [[Node][[Node_1][Node_2]][Node2]]
+typedef struct TAG
+{   
+    enum _TYPE_ type;
+    union
     {
-        
-    };
+        Node node;
+        struct {
+            struct TAG *nodelst;
+            int nodeln;
+        } Nodelst;
+    } UNode;
     
-} Expr;
+} NodeList;
+
+// ==============================
+// ==============================
 
 bool is_in(char *string, char c, int string_length)
 {

@@ -5,80 +5,116 @@
 #include "parser.h"
 #include "coms/common.h"
 
+// ADD: "Expr | ADD | Expr"
+// IF: IF | Expr | *code*
+// !: ! | Expr
 
-void callfnc(enum _TYPE_ type, void *tokens, int id)
+NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
 {
-    switch (c)
-    {
-        case LPAREN:
-            break;
-        case RPAREN:
-            break;
-        case LBRACE:
-            break;
-        case RBRACE:
-            break;
-        case COMMA:
-            break;
-        case DECIMAL:
-            break;
-        case COLON:
-            break;
-        case SCOLON:
-            break;
-        case ADD:
-            break;
-        case SUB:
-            break;
-        case STAR:
-            break;
-        case DIV:
-             
-            break;
-        case EQUAL:
-            break;
-        case POWER:
-            break;
-        case GTHAN:
-            break;
-        case LTHAN:
-            break;
-            
-        case EQUIVALENT:
-            break;
-        case GTHAN_OR_EQUAL_TO:
-            break;
-        case LTHAN_OR_EQUAL_TO:
-            break;
-    }
-
+    NodeList token = mem->Nodelst->nodelst[mem->Nodelst.nodelst.nodeln];
+    Token next_token = tokens[(*token_cnt) + 1];
+    
+    // mstack --> ministack, like a branch in a tree
+    NodeList mstack;
+    mstack.Nodelst.nodelst = NULL;
+    mstack.Nodelst.nodeln = 0;
+    size_t mstacksz = 0;
+    
+    // assign the first value (the terminal index) to the assignment token [EQUAL]
+    NodeList assig;
+    assig.node.type = next_token.type;
+    strcpy(assign.node.stor, next_token.stor);
+    
+    // copy that value into the stack (actually placing it into the stack)
+    mstacksz += sizeof(assig);
+    mstack.Nodelst.nodelst = realloc(mstack.Nodelst.nodelst, mstacksz);
+    mstack.Nodelst.nodelst[0] = assig;
+    
+    // assign left node as a new object
+    /*Token token = tokens[token_cnt];
+    NodeList ltoken;
+    ltoken.node.type = token.type;
+    strcpy(ltoken.node.stor, token.stor);*/
+    
+    // append ltoken object into the stack
+    mstacksz += sizeof(token);
+    mstack.Nodelst.nodelst = realloc(mstack.Nodelst.nodelst, mstacksz);
+    mstack.Nodelst.nodelst[1] = token;
+    
+    // find the assignment value
+    *token_cnt += 2;
+    NodeList value = parse_expr(tokens, token_cnt);
+    
+    // append value into the stack
+    mstacksz += sizeof(value);
+    mstack.Nodelst.nodelst = realloc(mstack.Nodelst.nodelst, mstacksz);
+    mstack.Nodelst.nodelst[2] = value;
+    
+    return mstack;
 }
 
 
-List ast(List *tokens)
+NodeList stack(List *tokens)
 {
-    Branch *branch;
+    Token *_tokens = (Token *)tokens->element;
+    int token_cnt = 0;
+    int *ptoken_cnt = &token_cnt;
     
-    int i = 0;
-    while (tokens->length - 1 > i)
+    // initialize the entire stack (PROGRAM refers to an entire file)
+    size_t stacksz = 1;
+    NodeList *stack = malloc(sizeof(NodeList) * stacksz);
+    stack[0].type = PROGRAM;
+    stack[0].Nodelst.nodelst = NULL;
+    stack[0].Nodelst.nodeln = 0;
+    
+    // initialize the entire memory stack
+    size_t memsz = 1;
+    NodeList *mem = malloc(sizeof(NodeList) * memsz);
+    /*mem[0].type = PROGRAM;
+    mem[0].Nodelst.nodelst = NULL;
+    mem[0].Nodelst.nodeln = 0;*/
+    
+    while (token_cnt < tokens->length - 1)
         {
-            Token *token = (Token *)tokens->element;
-            const char *TOKEN_STOR = token[i].stor;
-            const enum _TYPE_ TOKEN_TYPE = token[i].type;
+            Token token = _tokens[token_cnt];
+            Token next_token = _tokens[token_cnt + 1];
             
-            // there are 29 terminals
-            if (TOKEN_TYPE < 29)
-                {
+            // checking if any are terminal
+            const enum _TYPE_ TOKEN_TYPE = token.type;
+            const enum _TYPE_ NEXT_TOKEN_TYPE = next_token.type;
+            switch (TOKEN_TYPE)
+            {
+                case IDENTIFIER:
+                    if (NEXT_TOKEN_TYPE == LPAREN)
+                        {
+                            // parse_function
+                        }
+                    else if (NEXT_TOKEN_TYPE == EQUAL)
+                        {
+                            NodeList mstack = parse_assignment(tokens, ptoken_cnt, &mem);
+                            
+                        }
+                    else if (NEXT_TOKEN_TYPE == DECIMAL)
+                        {
+                            // parse_IDlinker
+                        }
+                    else if (NEXT_TOKEN_TYPE == ADD || NEXT_TOKEN_TYPE == SUB || NEXT_TOKEN_TYPE == STAR || NEXT_TOKEN_TYPE == DIV)
+                        {
+                            // prase_expr
+                        }
+                    break;
+                case LPAREN:
+                    // parse_expr
+                    break;
+                case LBRACE:
+                    // parse_scope
+                    break;
                     
-                }
-            else
-                {
-                    
-                }
-            
-            i++;
+                case EQUAL:
+                    // prase_expr
+                    break;
+            }
         }
-    
-    // temporary
-    free(branch->children);
+        
+    return stack;
 }

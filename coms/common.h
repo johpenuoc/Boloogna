@@ -21,7 +21,7 @@ enum _TYPE_
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
     LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
     
-    IDENTIFIER, COMMENT,
+    IDENTIFIER, COMMENT, PROGRAM
 };
 
 enum _DATATYPE_
@@ -47,19 +47,26 @@ typedef struct List
     
 } List;
 
-typedef struct Elem
+typedef struct
 {
-    // expects only a char*
-    void *elem;
+    enum _TYPE_ type;
+    char *stor;
     
-} Elem;
+} Node;
 
-typedef struct Branch
-{
-    enum _TYPE_ parent_type;
-    void *children;
+typedef struct TAG
+{   
+    enum _TYPE_ type;
+    union
+    {
+        Node node;
+        struct {
+            struct TAG *nodelst;
+            int nodeln;
+        } Nodelst;
+    } UNode;
     
-} Branch;
+} NodeList;
 
 bool is_in(char *string, char c, int string_length);
 bool only_numbers(char *string, int string_length);

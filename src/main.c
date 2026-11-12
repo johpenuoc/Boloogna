@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     List token_list = tokenize(file);
     Token *token = (Token *)(token_list.element);
     
-    ast(&token_list);
+    NodeList stack = stack(&token_list);
     
     // =======================================
     

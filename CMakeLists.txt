@@ -9,6 +9,7 @@ PRIVATE
     coms/common.c
     src/syntax/scan.c
     src/syntax/parser.c
+    src/err/rerr.c
 )
 
 target_include_directories(main PRIVATE
@@ -16,4 +17,5 @@ target_include_directories(main PRIVATE
     src
     coms
     src/syntax
+    src/err
 )

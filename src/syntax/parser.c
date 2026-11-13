@@ -1,17 +1,166 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "parser.h"
+#include "err/rerr.h"
 #include "coms/common.h"
 
-// ADD: "Expr | ADD | Expr"
-// IF: IF | Expr | *code*
-// !: ! | Expr
+// ==================NOTICE==================
+// i dont usually use comments, but i am here 
+// because its a little more complicated,
+// especially given that im not used to C
+//===========================================
+
+
+NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem);
+
+
+NodeList parse_factor(Token *tokens, int *token_cnt, NodeList *mem)
+{
+    Token token = tokens[*token_cnt];
+    
+    // mstack --> ministack, like a branch in a tree
+    NodeList mstack;
+    mstack.Nodelst.nodelst = NULL;
+    mstack.Nodelst.nodeln = 0;
+    size_t mstacksz = 0;
+    
+    switch (token.type)
+        {
+            case LPAREN:
+                (*token_cnt)++;
+                NodeList pe = parse_expr(tokens, token_cnt, mem);
+                
+                mstacksz++;
+                mstack.Nodelst.nodelst = realloc(mstack.Nodelst.nodelst, mstacksz);
+                mstack.Nodelst.nodelst[mstack.Nodelst.nodeln] = pe;
+                mstack.Nodelst.nodeln++;
+                break;
+            case RPAREN:
+                (*token_cnt)++;
+                return mstack; 
+            
+            case IDENTIFIER:
+                break;
+            case NUMBER:
+                break;
+            
+            default:
+                raise_uterr();
+                break;
+        }
+}
+
+NodeList parse_term(Token *tokens, int *token_cnt, NodeList *mem)
+{
+    NodeList pf = parse_factor(tokens, token_cnt, mem);
+    
+    while ()
+        {
+            
+        }
+}
+
+// x = 4 - 3 * 2;
+// y = 2 * 3 - 4;
+// if term: make NodeList
+// NodeList n, n[0] = *, n[1] = mem[0]
+
+NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem)
+{
+    Token token = tokens[*token_cnt];
+    
+    // mstack --> ministack, like a branch in a tree
+    NodeList mstack;
+    mstack.Nodelst.nodelst = NULL;
+    mstack.Nodelst.nodeln = 0;
+    size_t mstacksz = 0;
+    
+    while (true)
+        {
+            NodeList pt = parse_term(tokens, token_cnt, mem);
+        }
+        
+    return mstack;
+}
+
+// 2 + 5 - (7 * 4)
+
+NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem)
+{
+    Token token = tokens[*token_cnt];
+    
+    // mstack --> ministack, like a branch in a tree
+    NodeList mstack;
+    mstack.Nodelst.nodelst = NULL;
+    mstack.Nodelst.nodeln = 0;
+    size_t mstacksz = 0;
+    
+    while (true)
+        {
+            if (token.type == RPAREN) return mmstack;
+            else if (token.type == LPAREN)
+                {
+                    (*token_cnt)++;
+                    mem->Nodels.nodelst[mem->Nodelst.nodeln] = parse_expr(tokens, token_cnt, mem)
+                }
+            
+            if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV)
+                {
+                    // this is a mini-mini stack --> [OP][x][y]
+                    NodeList mmstack;
+                    mmstack.Nodelst.nodelst = NULL;
+                    mmstack.Nodelst.nodeln = 0;
+                    size_t mmstacksz = 0;
+                    
+                    // fetch the previous token from memory
+                    NodeList prev_token = mem->Nodels.nodelst[mem->Nodelst.nodeln];
+                    
+                    // assign the first value (the terminal index) to the assignment token [ ADD || SUB || STAR || DIV ]
+                    NodeList term;
+                    term.node.type == token.type;
+                    strcpy(term.node.stor, token.stor);
+                    
+                    // copy it into mini-mini stack
+                    mmstacksz += sizeof(term);
+                    mmstack.Nodelst.nodelst = realloc(mmstack.Nodelst.nodelst, mmstacksz);
+                    mmstack.Nodelst.nodelst[0] = term;
+                    
+                    // copy the next two values into the mini stack
+                    //     left token (which is in mem)
+                    mmstacksz += sizeof(prev_token);
+                    mmstack.Nodelst.nodelst = realloc(mmstack.Nodelst.nodelst, mmstacksz);
+                    mmstack.Nodelst.nodelst[1] = prev_token;
+                    
+                    //    right token
+                    if (tokens[(*token_cnt) + 1] == LPAREN)
+                        {
+                            (*token_cnt)++;
+                            NodeList next_token = parse_expr(tokens, token_cnt, mem)
+                        }
+                    else
+                        {
+                            NodeList next_token = tokens[(*token_cnt) + 1];
+                        }
+                    mmstacksz += sizeof(next_token);
+                    mmstack.Nodelst.nodelst = realloc(mmstack.Nodelst.nodelst, mmstacksz);
+                    mmstack.Nodelst.nodelst[2] = next_token;
+                    
+                    // update the memory
+                    mem->Nodels.nodelst[mem->Nodelst.nodeln] = mmstacks;
+                    
+                }
+            
+            token = tokens[*token_cnt];
+            (*token_cnt)++;
+        }
+}
 
 NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
 {
-    NodeList token = mem->Nodelst->nodelst[mem->Nodelst.nodelst.nodeln];
+    NodeList token = mem->Nodelst.nodelst[mem->Nodelst.nodeln];
     Token next_token = tokens[(*token_cnt) + 1];
     
     // mstack --> ministack, like a branch in a tree
@@ -100,7 +249,7 @@ NodeList stack(List *tokens)
                         }
                     else if (NEXT_TOKEN_TYPE == ADD || NEXT_TOKEN_TYPE == SUB || NEXT_TOKEN_TYPE == STAR || NEXT_TOKEN_TYPE == DIV)
                         {
-                            // prase_expr
+                            NodeList mstack = parse_expr(tokens, ptoken_cnt, &mem);
                         }
                     break;
                 case LPAREN:

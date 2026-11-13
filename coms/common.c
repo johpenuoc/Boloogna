@@ -7,6 +7,21 @@ char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"!=+-/*^";
 char *TERM = "(){},.:;+-*/=^><!?";
 char *MODE = "\"#";
 
+enum _LOW_PRIORITY_
+{
+    ADD, SUB
+};
+
+enum _MED_PRIORITY_
+{
+    STAR, DIV
+};
+
+enum _HIGH_PRIORITY_
+{
+    LPAREN
+};
+
 enum _TYPE_ 
 {
     LPAREN, RPAREN, LBRACE, RBRACE,

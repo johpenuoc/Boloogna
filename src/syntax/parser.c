@@ -102,24 +102,43 @@ NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem)
 
 NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
 {
-    NodeList token = mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln];
+    /*NodeList token = mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln];
+    Token next_token = tokens[(*token_cnt) + 1];*/
+    
+    NodeMaster token = mem.UNION.Nodes.nodes[mem.UNION.Nodes.nodeln - 1];
     Token next_token = tokens[(*token_cnt) + 1];
     
     // mstack --> ministack, like a branch in a tree
-    NodeList mstack;
+    /*NodeList mstack;
     mstack.UNode.Nodelst.nodelst = NULL;
     mstack.UNode.Nodelst.nodeln = 0;
+    size_t mstacksz = 0;*/
+    
     size_t mstacksz = 0;
+    NodeMaster mstack;
+    mstack.utype = NODES;
+    mstack.UNION.Nodes.nodes = NULL;
+    mstack.UNION.Nodes.nodeln = 0;
     
     // assign the first value (the terminal index) to the assignment token [EQUAL]
-    NodeList assig;
+    /*NodeList assig;
     assig.node.type = next_token.type;
-    strcpy(assig.node.stor, next_token.stor);
+    strcpy(assig.node.stor, next_token.stor);*/
+    
+    NodeMaster assig;
+    assig.utype = NODE;
+    assig.UNION.Node.type = next_token.type;
+    strcpy(assig.UNION.Node.stor, next_token.stor);
     
     // copy that value into the stack (actually placing it into the stack)
-    mstacksz += sizeof(assig);
+    /*mstacksz += sizeof(assig);
     mstack.UNode.Nodelst.nodelst = realloc(mstack.UNode.Nodelst.nodelst, mstacksz);
-    mstack.UNode.Nodelst.nodelst[0] = assig;
+    mstack.UNode.Nodelst.nodelst[0] = assig;*/
+    
+    mstacksz += sizeof(assig);
+    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = assig;
+    mstack.UNION.Nodes.nodeln++;
     
     // assign left node as a new object
     /*Token token = tokens[token_cnt];
@@ -128,19 +147,32 @@ NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
     strcpy(ltoken.node.stor, token.stor);*/
     
     // append ltoken object into the stack
-    mstacksz += sizeof(token);
+    /*mstacksz += sizeof(token);
     mstack.UNode.Nodelst.nodelst = realloc(mstack.UNode.Nodelst.nodelst, mstacksz);
-    mstack.UNode.Nodelst.nodelst[1] = token;
+    mstack.UNode.Nodelst.nodelst[1] = token;*/
+    
+    mstacksz += sizeof(token);
+    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = token;
+    mstack.UNION.Nodes.nodeln++;
     
     // find the assignment value
+    /**token_cnt += 2;
+    NodeList value = parse_expr(tokens, token_cnt, mem);*/
+    
     *token_cnt += 2;
-    NodeList value = parse_expr(tokens, token_cnt, mem);
+    NodeMaster value = parse_expr(tokens, token_cnt, mem);
     
     // append value into the stack
-    mstacksz += sizeof(value);
+    /*mstacksz += sizeof(value);
     mstack.UNode.Nodelst.nodelst = realloc(mstack.UNode.Nodelst.nodelst, mstacksz);
     mstack.UNode.Nodelst.nodelst[2] = value;
-    mstack.UNode.Nodelst.nodeln = 3;
+    mstack.UNode.Nodelst.nodeln = 3;*/
+    
+    mstacksz += sizeof(value);
+    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = value;
+    mstack.UNION.Nodes.nodeln++;
     
     return mstack;
 }

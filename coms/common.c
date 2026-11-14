@@ -7,6 +7,11 @@ char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"!=+-/*^";
 char *TERM = "(){},.:;+-*/=^><!?";
 char *MODE = "\"#";
 
+enum _UTYPE_
+{
+    NODE, NODES
+};
+
 enum _LOW_PRIORITY_
 {
     ADD, SUB
@@ -84,13 +89,33 @@ typedef struct TAG
     union
     {
         Node node;
-        struct {
+        struct
+        {
             struct TAG *nodelst;
             int nodeln;
         } Nodelst;
     } UNode;
     
 } NodeList;
+
+typedef struct TAG
+{
+    enum _UTYPE_ utype;
+    union
+    {
+        struct
+        {
+            enum _TYPE_ type;
+            char *stor;
+        } Node;
+        
+        struct
+        {
+            struct TAG *nodes;
+            int nodeln;
+        } Nodes;
+    } UNION;
+} NodeMaster;
 
 // ==============================
 // ==============================

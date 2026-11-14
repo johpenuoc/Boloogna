@@ -49,12 +49,17 @@ int main(int argc, char **argv)
     
     NodeList stack = stack(&token_list);
     
+    for (int i = 0; i < stack.Nodelst.nodeln - 1; ++i)
+        {
+            printf("[%s]\n", type_names[stack[i].type])
+        }
+    
     // =======================================
     
-    for (int i = 0; i < token_list.length - 1; ++i)
+    /*for (int i = 0; i < token_list.length - 1; ++i)
         {
             printf("[%s] \t %s\n", type_names[token[i].type], token[i].stor);
-        }
+        }*/
     
     return 0;
 }

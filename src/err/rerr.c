@@ -4,7 +4,7 @@
 
 void raise_err(char *code)
 {
-    printf("Error: %s\n" code);
+    printf("Error: %s\n", code);
 }
 
 // raise unexpected token error

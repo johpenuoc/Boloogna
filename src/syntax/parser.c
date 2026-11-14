@@ -14,15 +14,21 @@
 // ==========================================
 
 
-NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem)
+NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem, size_t *memsz)
 {
     Token token = tokens[*token_cnt];
     
     // mstack --> ministack, like a branch in a tree
-    NodeList mstack;
+    /*NodeList mstack;
     mstack.UNode.Nodelst.nodelst = NULL;
     mstack.UNode.Nodelst.nodeln = 0;
+    size_t mstacksz = 0;*/
+    
     size_t mstacksz = 0;
+    NodeMaster mstack;
+    mstack.utype = NODES;
+    mstack.UNION.Nodes.nodes = NULL;
+    mstack.UNION.Nodes.nodeln = 0;
     
     while (true)
         {
@@ -34,38 +40,66 @@ NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem)
             else if (token.type == LPAREN)
                 {
                     (*token_cnt)++;
-                    mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln] = parse_expr(tokens, token_cnt, mem);
+                    
+                    /*mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln] = parse_expr(tokens, token_cnt, mem);*/
+                    
+                    NodeMaster tmp = parse_expr(tokens, token_cnt, mem);
+                    umem(mem, &tmp, memsz);
                 }
             
             else if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV)
                 {
                     // this is a mini-mini stack --> [OP][x][y]
-                    NodeList mmstack;
+                    /*NodeList mmstack;
                     mmstack.UNode.Nodelst.nodelst = NULL;
                     mmstack.UNode.Nodelst.nodeln = 0;
+                    size_t mmstacksz = 0;*/
+                    
                     size_t mmstacksz = 0;
+                    NodeMaster mmstack;
+                    mmstack.utype = NODES;
+                    mmstack.UNION.Nodes.nodes = NULL;
+                    mmstack.UNION.Nodes.nodeln = 0;
                     
                     // fetch the previous token from memory
-                    NodeList prev_token = mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln];
+                    /*NodeList prev_token = mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln];*/
+                    
+                    NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
                     
                     // assign the first value (the terminal index) to the assignment token [ ADD || SUB || STAR || DIV ]
-                    NodeList term;
+                    /*NodeList term;
                     term.node.type = token.type;
-                    strcpy(term.node.stor, token.stor);
+                    strcpy(term.node.stor, token.stor);*/
+                    
+                    NodeMaster term;
+                    term.utype = NODE;
+                    term.UNION.Node.type = token.type;
+                    strcpy(term.UNION.Node.stor, token.stor);
                     
                     // copy it into mini-mini stack
-                    mmstacksz += sizeof(term);
+                    /*mmstacksz += sizeof(term);
                     mmstack.UNode.Nodelst.nodelst = realloc(mmstack.UNode.Nodelst.nodelst, mmstacksz);
-                    mmstack.UNode.Nodelst.nodelst[0] = term;
+                    mmstack.UNode.Nodelst.nodelst[0] = term;*/
+                    
+                    mmstacksz += sizeof(term);
+                    mmstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
+                    mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln - 1] = term;
+                    mmstack.UNION.Nodes.nodeln++;
                     
                     // copy the next two values into the mini stack
                     //     left token (which is in mem)
-                    mmstacksz += sizeof(prev_token);
+                    /*mmstacksz += sizeof(prev_token);
                     mmstack.UNode.Nodelst.nodelst = realloc(mmstack.UNode.Nodelst.nodelst, mmstacksz);
-                    mmstack.UNode.Nodelst.nodelst[1] = prev_token;
+                    mmstack.UNode.Nodelst.nodelst[1] = prev_token;*/
+                    
+                    mmstacksz += sizeof(prev_token);
+                    mmstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
+                    mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln - 1] = prev_token;
+                    mmstack.UNION.Nodes.nodeln++;
                     
                     //    right token
-                    NodeList next_token;
+                    //NodeList next_token;
+                    NodeMaster next_token;
                     if (tokens[(*token_cnt) + 1].type == LPAREN)
                         {
                             (*token_cnt) += 2;
@@ -73,25 +107,43 @@ NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem)
                         }
                     else
                         {
-                            next_token.type = tokens[(*token_cnt) + 1].type;
+                            /*next_token.type = tokens[(*token_cnt) + 1].type;
                             strcpy(next_token.node.stor, tokens[(*token_cnt) + 1].stor);
+                            (*token_cnt)++;*/
+                            
+                            next_token.utype = NODE;
+                            next_token.UNION.Node.type = tokens[(*token_cnt) + 1].type;
+                            strcpy(next_token.UNION.Node.stor, tokens[(*token_cnt) + 1].stor);
+                            
                             (*token_cnt)++;
                         }
-                    mmstacksz += sizeof(next_token);
+                    /*mmstacksz += sizeof(next_token);
                     mmstack.UNode.Nodelst.nodelst = realloc(mmstack.UNode.Nodelst.nodelst, mmstacksz);
                     mmstack.UNode.Nodelst.nodelst[2] = next_token;
                     // IMPORTANT ======== DO NOT FORGET
                     mmstack.UNode.Nodelst.nodeln = 3;
-                    // ================================
+                    // ================================*/
+                    
+                    mmstacksz += sizeof(next_token);
+                    mmstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
+                    mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln - 1] = next_token;
+                    mmstack.UNION.Nodes.nodeln++
                     
                     // update the memory
-                    mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln] = mmstack;
+                    /*mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln] = mmstack;*/
+                    
+                    umem(mem, &mmstack, memsz);
                     
                     // update mstack with mmstack
-                    mstacksz += sizeof(mmstack);
+                    /*mstacksz += sizeof(mmstack);
                     mstack.UNode.Nodelst.nodelst = realloc(mstack.UNode.Nodelst.nodelst, mstacksz);
                     mstack.UNode.Nodelst.nodelst[mstack.UNode.Nodelst.nodeln] = mmstack;
-                    mstack.UNode.Nodelst.nodeln++;
+                    mstack.UNode.Nodelst.nodeln++;*/
+                    
+                    mstacksz += sizeof(mmstack);
+                    mstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
+                    mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln - 1] = mmstack;
+                    mmstack.UNION.Nodes.nodeln++
                     
                 }
             
@@ -150,7 +202,7 @@ NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
     /*mstacksz += sizeof(token);
     mstack.UNode.Nodelst.nodelst = realloc(mstack.UNode.Nodelst.nodelst, mstacksz);
     mstack.UNode.Nodelst.nodelst[1] = token;*/
-    
+]
     mstacksz += sizeof(token);
     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = token;
@@ -175,6 +227,14 @@ NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
     mstack.UNION.Nodes.nodeln++;
     
     return mstack;
+}
+
+void umem(NodeMaster *mem, NodeMaster *x, size_t *memsz)
+{
+    *memsz += sizeof(*x);
+    mem->UNION.Nodes.nodes = realloc(mem->UNION.Nodes.nodes, *memsz);
+    mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln] = *tn;
+    mem->UNION.Nodes.nodeln++;
 }
 
 
@@ -228,10 +288,7 @@ NodeMaster stack(List *tokens)
             tn.UNION.Node.type = TOKEN_TYPE;
             strcpy(tn.UNION.Node.stor, token.stor);
             //    then store it in memory
-            memsz += sizeof(tn);
-            mem.UNION.Nodes.nodes = realloc(mem.UNION.Nodes.nodes, memsz);
-            mem.UNION.Nodes.nodes[mem.UNION.Nodes.nodeln] = tn;
-            mem.UNION.Nodes.nodeln++;
+            umem(&mem, &tn, &memsz);
             
             switch (TOKEN_TYPE)
             {

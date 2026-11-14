@@ -146,25 +146,39 @@ NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
 }
 
 
-NodeList stack(List *tokens)
+NodeMaster stack(List *tokens)
 {
     Token *_tokens = (Token *)tokens->element;
     int token_cnt = 0;
     int *ptoken_cnt = &token_cnt;
     
     // initialize the entire stack (PROGRAM refers to an entire file)
-    size_t _stacksz = 1;
+    /*size_t _stacksz = 1;
     NodeList *_stack;// = malloc(sizeof(NodeList) * _stacksz);
     _stack->type = PROGRAM;
     _stack->UNode.Nodelst.nodelst = NULL;
-    _stack->UNode.Nodelst.nodeln = 0;
+    _stack->UNode.Nodelst.nodeln = 0;*/
+    
+    size_t stacksz = 0;
+    NodeMaster _stack;
+    _stack.utype = NODES;
+    _stack.UNION.Nodes.type = PROGRAM
+    _stack.UNION.Nodes.nodes = NULL;
+    _stack.UNION.Nodes.nodeln = 0;
     
     // initialize the entire memory _stack
-    size_t memsz = 2;
+    /*size_t memsz = 2;
     NodeList *mem = malloc(sizeof(NodeList) * memsz);
     //mem[0].UNode.Nodelst.nodelst = NULL;
     mem[0].type = PROGRAM;
-    mem[0].UNode.Nodelst.nodeln = 1;
+    mem[0].UNode.Nodelst.nodeln = 1;*/
+    
+    size_t memsz = 0;
+    NodeMaster mem;
+    mem.utype = NODES;
+    mem.UNION.Nodes.type = MEMORY;
+    mem.UNION.Nodes.nodes = NULL;
+    mem.UNION.Nodes.nodeln = 0;
     
     while (token_cnt < tokens->length - 1)
         {
@@ -174,26 +188,40 @@ NodeList stack(List *tokens)
             // checking if any are terminal
             const enum _TYPE_ TOKEN_TYPE = token.type;
             const enum _TYPE_ NEXT_TOKEN_TYPE = next_token.type;
+            
+            // always update memory with each token
+            //    we first create a Node for the current token
+            NodeMaster tn;
+            tn.utype = NODE;
+            tn.UNION.Node.type = TOKEN_TYPE;
+            strcpy(tn.UNION.Node.stor, token.stor);
+            //    then store it in memory
+            memsz += sizeof(tn);
+            mem.UNION.Nodes.nodes = realloc(mem.UNION.Nodes.nodes, memsz);
+            mem.UNION.Nodes.nodes[mem.UNION.Nodes.nodeln] = tn;
+            mem.UNION.Nodes.nodeln++;
+            
             switch (TOKEN_TYPE)
             {
-                case IDENTIFIER:
-                    mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln] = realloc(mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln], sizeof(NodeList));
-                    mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln].type = IDENTIFIER;
-                    strcpy(mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln].UNode.node.stor, token.stor);
-                
+                case IDENTIFIER:  
                     if (NEXT_TOKEN_TYPE == LPAREN)
                         {
                             // parse_function
                         }
                     else if (NEXT_TOKEN_TYPE == EQUAL)
                         {
-                            NodeList mstack = parse_assignment(_tokens, ptoken_cnt, mem);
+                            NodeList mstack = parse_assignment(_tokens, ptoken_cnt, &mem);
                             
                             // append it to the stack
-                            _stacksz += sizeof(mstack);
+                            /*_stacksz += sizeof(mstack);
                             _stack->UNode.Nodelst.nodelst = realloc(_stack->UNode.Nodelst.nodelst, _stacksz);
                             _stack->UNode.Nodelst.nodelst[_stack->UNode.Nodelst.nodeln + 1] = mstack;
-                            _stack->UNode.Nodelst.nodeln++;
+                            _stack->UNode.Nodelst.nodeln++;*/
+                            
+                            stacksz += sizeof(mstack);
+                            _stack.UNION.Nodes.nodes = realloc(_stack.UNION.Nodes.nodes, stacksz);
+                            _stack.UNION.Nodes.nodes[ _stack.UNION.Nodes.nodeln] = mstack;
+                            _stack.UNION.Nodes.nodeln++;
                             
                         }
                     else if (NEXT_TOKEN_TYPE == DECIMAL)
@@ -202,7 +230,7 @@ NodeList stack(List *tokens)
                         }
                     else if (NEXT_TOKEN_TYPE == ADD || NEXT_TOKEN_TYPE == SUB || NEXT_TOKEN_TYPE == STAR || NEXT_TOKEN_TYPE == DIV)
                         {
-                            NodeList mstack = parse_expr(_tokens, ptoken_cnt, mem);
+                            NodeList mstack = parse_expr(_tokens, ptoken_cnt, &mem);
                             
                             // append it to the stack
                             _stacksz += sizeof(mstack);

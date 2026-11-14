@@ -8,6 +8,6 @@ NodeList parse_term(Token *tokens, int *token_cnt, NodeList *mem);
 NodeList parse_expr(Token *tokens, int *token_cnt, Nodelist *mem);
 NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem);
 
-NodeList stack(List *tokens);
+NodeMaster stack(List *tokens);
 
 #endif

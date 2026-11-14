@@ -41,7 +41,7 @@ enum _TYPE_
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
     LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
     
-    IDENTIFIER, COMMENT, PROGRAM
+    IDENTIFIER, COMMENT, PROGRAM, MEMORY
 };
 
 enum _DATATYPE_
@@ -102,10 +102,13 @@ typedef struct TAG
         
         struct
         {
+            enum _TYPE_ type;
             struct TAG *nodes;
             int nodeln;
         } Nodes;
+        
     } UNION;
+    
 } NodeMaster;
 
 bool is_in(char *string, char c, int string_length);

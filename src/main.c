@@ -20,7 +20,12 @@ const char *type_names[] = {
     "EQUIVALENT", "GTHAN_OR_EQUAL_TO", "LTHAN_OR_EQUAL_TO",
     "NOT_EQUAL_TO",
     
-    "IDENTIFIER", "COMMENT"
+    "IDENTIFIER", "COMMENT", "PROGRAM", "MEMORY"
+
+};
+
+const char *utype_names[] = {
+    "NODE", "NODES"
 
 };
 
@@ -47,11 +52,11 @@ int main(int argc, char **argv)
     List token_list = tokenize(file);
     Token *token = (Token *)(token_list.element);
     
-    NodeList stack = stack(&token_list);
+    NodeMaster _stack = stack(&token_list);
     
-    for (int i = 0; i < stack.Nodelst.nodeln - 1; ++i)
+    for (int i = 0; i < _stack.UNION.Nodes.nodeln - 1; ++i)
         {
-            printf("[%s]\n", type_names[stack[i].type])
+            printf("[%s]\n", utype_names[_stack.UNION.Nodes.nodes[i].utype]);
         }
     
     // =======================================

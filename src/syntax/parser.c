@@ -13,8 +13,16 @@
 // especially given that im not used to C
 // ==========================================
 
+void umem(NodeMaster *mem, NodeMaster *x, size_t *memsz)
+{
+    *memsz += sizeof(*x);
+    mem->UNION.Nodes.nodes = realloc(mem->UNION.Nodes.nodes, *memsz);
+    mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln] = *x;
+    mem->UNION.Nodes.nodeln++;
+}
 
-NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem, size_t *memsz)
+
+NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
 {
     Token token = tokens[*token_cnt];
     
@@ -43,7 +51,7 @@ NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem, size_t *memsz)
                     
                     /*mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln] = parse_expr(tokens, token_cnt, mem);*/
                     
-                    NodeMaster tmp = parse_expr(tokens, token_cnt, mem);
+                    NodeMaster tmp = parse_expr(tokens, token_cnt, mem, memsz);
                     umem(mem, &tmp, memsz);
                 }
             
@@ -103,7 +111,7 @@ NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem, size_t *memsz)
                     if (tokens[(*token_cnt) + 1].type == LPAREN)
                         {
                             (*token_cnt) += 2;
-                            next_token = parse_expr(tokens, token_cnt, mem);
+                            next_token = parse_expr(tokens, token_cnt, mem, memsz);
                         }
                     else
                         {
@@ -127,7 +135,7 @@ NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem, size_t *memsz)
                     mmstacksz += sizeof(next_token);
                     mmstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
                     mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln - 1] = next_token;
-                    mmstack.UNION.Nodes.nodeln++
+                    mmstack.UNION.Nodes.nodeln++;
                     
                     // update the memory
                     /*mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln] = mmstack;*/
@@ -143,7 +151,7 @@ NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem, size_t *memsz)
                     mstacksz += sizeof(mmstack);
                     mstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
                     mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln - 1] = mmstack;
-                    mmstack.UNION.Nodes.nodeln++
+                    mmstack.UNION.Nodes.nodeln++;
                     
                 }
             
@@ -152,12 +160,12 @@ NodeList parse_expr(Token *tokens, int *token_cnt, NodeList *mem, size_t *memsz)
         }
 }
 
-NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
+NodeMaster parse_assignment(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
 {
     /*NodeList token = mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln];
     Token next_token = tokens[(*token_cnt) + 1];*/
     
-    NodeMaster token = mem.UNION.Nodes.nodes[mem.UNION.Nodes.nodeln - 1];
+    NodeMaster token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
     Token next_token = tokens[(*token_cnt) + 1];
     
     // mstack --> ministack, like a branch in a tree
@@ -202,7 +210,7 @@ NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
     /*mstacksz += sizeof(token);
     mstack.UNode.Nodelst.nodelst = realloc(mstack.UNode.Nodelst.nodelst, mstacksz);
     mstack.UNode.Nodelst.nodelst[1] = token;*/
-]
+
     mstacksz += sizeof(token);
     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = token;
@@ -213,7 +221,7 @@ NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
     NodeList value = parse_expr(tokens, token_cnt, mem);*/
     
     *token_cnt += 2;
-    NodeMaster value = parse_expr(tokens, token_cnt, mem);
+    NodeMaster value = parse_expr(tokens, token_cnt, mem, memsz);
     
     // append value into the stack
     /*mstacksz += sizeof(value);
@@ -227,14 +235,6 @@ NodeList parse_assignment(Token *tokens, int *token_cnt, NodeList *mem)
     mstack.UNION.Nodes.nodeln++;
     
     return mstack;
-}
-
-void umem(NodeMaster *mem, NodeMaster *x, size_t *memsz)
-{
-    *memsz += sizeof(*x);
-    mem->UNION.Nodes.nodes = realloc(mem->UNION.Nodes.nodes, *memsz);
-    mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln] = *tn;
-    mem->UNION.Nodes.nodeln++;
 }
 
 
@@ -254,7 +254,7 @@ NodeMaster stack(List *tokens)
     size_t stacksz = 0;
     NodeMaster _stack;
     _stack.utype = NODES;
-    _stack.UNION.Nodes.type = PROGRAM
+    _stack.UNION.Nodes.type = PROGRAM;
     _stack.UNION.Nodes.nodes = NULL;
     _stack.UNION.Nodes.nodeln = 0;
     
@@ -299,7 +299,7 @@ NodeMaster stack(List *tokens)
                         }
                     else if (NEXT_TOKEN_TYPE == EQUAL)
                         {
-                            NodeList mstack = parse_assignment(_tokens, ptoken_cnt, &mem);
+                            NodeMaster mstack = parse_assignment(_tokens, ptoken_cnt, &mem, &memsz);
                             
                             // append it to the stack
                             /*_stacksz += sizeof(mstack);
@@ -319,13 +319,20 @@ NodeMaster stack(List *tokens)
                         }
                     else if (NEXT_TOKEN_TYPE == ADD || NEXT_TOKEN_TYPE == SUB || NEXT_TOKEN_TYPE == STAR || NEXT_TOKEN_TYPE == DIV)
                         {
-                            NodeList mstack = parse_expr(_tokens, ptoken_cnt, &mem);
+                            //NodeList mstack = parse_expr(_tokens, ptoken_cnt, &mem);
+                            
+                            NodeMaster mstack = parse_expr(_tokens, ptoken_cnt, &mem, &memsz);
                             
                             // append it to the stack
-                            _stacksz += sizeof(mstack);
+                           /* _stacksz += sizeof(mstack);
                             _stack->UNode.Nodelst.nodelst = realloc(_stack->UNode.Nodelst.nodelst, _stacksz);
                             _stack->UNode.Nodelst.nodelst[_stack->UNode.Nodelst.nodeln + 1] = mstack;
-                            _stack->UNode.Nodelst.nodeln++;
+                            _stack->UNode.Nodelst.nodeln++;*/
+                            
+                            stacksz += sizeof(mstack);
+                            _stack.UNION.Nodes.nodes = realloc(_stack.UNION.Nodes.nodes, stacksz);
+                            _stack.UNION.Nodes.nodes[_stack.UNION.Nodes.nodeln - 1] = mstack;
+                            _stack.UNION.Nodes.nodeln++;
                         }
                     break;
                 case LPAREN:
@@ -341,7 +348,5 @@ NodeMaster stack(List *tokens)
             }
         }
         
-    NodeList tstack = *_stack;
-        
-    return tstack;
+    return _stack;
 }

@@ -14,17 +14,17 @@ enum _UTYPE_
 
 enum _LOW_PRIORITY_
 {
-    ADD, SUB
+    _ADD, _SUB
 };
 
 enum _MED_PRIORITY_
 {
-    STAR, DIV
+    _STAR, _DIV
 };
 
 enum _HIGH_PRIORITY_
 {
-    LPAREN
+    _LPAREN
 };
 
 enum _TYPE_ 
@@ -50,11 +50,6 @@ enum _DATATYPE_
     _FLOAT_
 };
 
-enum _NODETYPE_
-{
-    NODE, TERMNODE
-};
-
 typedef struct Token
 {
     enum _TYPE_ type;
@@ -74,29 +69,8 @@ typedef struct List
 // ==============================
 // ==============================
 
-typedef struct
-{
-    enum _TYPE_ type;
-    char *stor;
-    
-} Node;
-
-// a nodelist can either be a single node --> [Node] at index one
+// a nodemaster can either be a single node --> [Node] at index one
 // or it can hold multiple nodes --> [[Node][[Node_1][Node_2]][Node2]]
-typedef struct TAG
-{   
-    enum _TYPE_ type;
-    union
-    {
-        Node node;
-        struct
-        {
-            struct TAG *nodelst;
-            int nodeln;
-        } Nodelst;
-    } UNode;
-    
-} NodeList;
 
 typedef struct TAG
 {

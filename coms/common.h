@@ -14,17 +14,17 @@ enum _UTYPE_
 
 enum _LOW_PRIORITY_
 {
-    ADD, SUB
+    _ADD, _SUB
 };
 
 enum _MED_PRIORITY_
 {
-    STAR, DIV
+    _STAR, _DIV
 };
 
 enum _HIGH_PRIORITY_
 {
-    LPAREN
+    _LPAREN
 };
 
 enum _TYPE_ 
@@ -66,28 +66,6 @@ typedef struct List
     int length;
     
 } List;
-
-typedef struct
-{
-    enum _TYPE_ type;
-    char *stor;
-    
-} Node;
-
-typedef struct TAG
-{   
-    enum _TYPE_ type;
-    union
-    {
-        Node node;
-        struct 
-        {
-            struct TAG *nodelst;
-            int nodeln;
-        } Nodelst;
-    } UNode;
-    
-} NodeList;
 
 typedef struct TAG
 {

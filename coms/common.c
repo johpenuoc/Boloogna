@@ -97,6 +97,11 @@ typedef struct TAG
 // ==============================
 // ==============================
 
+void debugp(char *s)
+{
+    printf("DEBUG [%s]\n", s);
+}
+
 bool is_in(char *string, char c, int string_length)
 {
     for (int i = 0; i < string_length; ++i)

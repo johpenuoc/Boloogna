@@ -21,13 +21,28 @@ const char *type_names[] = {
     "NOT_EQUAL_TO",
     
     "IDENTIFIER", "COMMENT", "PROGRAM", "MEMORY"
-
 };
 
 const char *utype_names[] = {
     "NODE", "NODES"
-
 };
+
+void printn(NodeMaster *stack)
+{
+    if (stack->utype == NODE)
+        {
+            printf("Node TYPE:\t\t%s\n", utype_names[stack->utype]);
+            printf("Node STOR:\t\t%s\n", type_names[stack->utype]);
+        }
+    else
+        {
+            for (int i = 0; i < stack->UNION.Nodes.nodeln; ++i)
+                {
+                    NodeMaster node_s = stack->UNION.Nodes.nodes[i];
+                    printn(&node_s);
+                }
+        }
+}
 
 
 int main(int argc, char **argv)
@@ -53,11 +68,12 @@ int main(int argc, char **argv)
     Token *token = (Token *)(token_list.element);
     
     NodeMaster _stack = stack(&token_list);
+    free(token_list.element);
+    printf("out?\n");
     
-    for (int i = 0; i < _stack.UNION.Nodes.nodeln - 1; ++i)
-        {
-            printf("[%s]\n", utype_names[_stack.UNION.Nodes.nodes[i].utype]);
-        }
+    printf(": %d\n", _stack.UNION.Nodes.nodeln);
+    
+    printn(&_stack);
     
     // =======================================
     

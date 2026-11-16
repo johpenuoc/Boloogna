@@ -1,1 +1,1 @@
-player.box.x;
+y = 500 - (player.x + enemy.x);

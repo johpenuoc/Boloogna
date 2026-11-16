@@ -35,6 +35,8 @@ const char *_utypes[] = {
     "NODE", "NODES"
 };
 
+NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
+
 // save to mstack
 void sto_mstack(NodeMaster *mstack, size_t *mstacksz, NodeMaster node_s)
 {
@@ -87,7 +89,7 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     
     while (true)
         {
-            //printf("-> %s\n", token.stor);
+            printf("-> %s\n", token.stor);
             if (token.type == RPAREN || token.type == SCOLON) 
                 {                   
                     NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
@@ -108,7 +110,16 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     
                     (*token_cnt)--;
                 }
-            
+            else if (token.type == DECIMAL)
+                {
+                    // parse_IDlinker expects to start on the DECIMAL
+                    NodeMaster idlk = parse_IDlinker(tokens, token_cnt, mem, memsz);
+                    umem(mem, idlk, memsz);
+                    
+                    // parse_expr (the function we're in) expects to go through every token.
+                    // parse_IDlinker puts us one ahead. hence '--'
+                    (*token_cnt)--;
+                }
             else if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV)
                 {
                     // this is a mini-mini stack --> [OP][x][y]                
@@ -145,10 +156,8 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     if (tokens[(*token_cnt) + 1].type == LPAREN)
                         {
                             (*token_cnt) += 2;
-                            //debugp("entering");
                             next_token = parse_expr(tokens, token_cnt, mem, memsz);
                             (*token_cnt)--;
-                            //debugp("exiting");
                         }
                     else
                         {
@@ -245,7 +254,14 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
     while (true)
         {
             //printf("-> %s\n", token.stor);
-            if (token.type == SCOLON) 
+            /*bool endID;
+            enum _TYPE_ tokentype = tokens[*token_cnt].type;
+            enum _TYPE_ ntokentype = tokens[(*token_cnt) + 1].type;
+            if (*token_cnt > 0 && tokentype == IDENTIFIER && ntokentype == DECIMAL) endID = false;
+            else if (*token_cnt > 0 && tokentype == IDENTIFIER && ntokentype != DECIMAL) endID = true;
+            else endID = false;*/
+            
+            if (token.type == SCOLON || token.type != IDENTIFIER && token.type != DECIMAL) 
                 {                   
                     NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
                     mstacksz += sizeof(mmstack);
@@ -253,7 +269,7 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
                     mstack.UNION.Nodes.nodeln++;
                     
-                    (*token_cnt)++;
+                    //(*token_cnt)++;
                     return mstack; 
                 }
             else if (token.type == DECIMAL)
@@ -267,8 +283,9 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     
                     // fetch the previous token from memory
                     NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
+                    printf("prev token: %s\n", prev_token.UNION.Node.stor);
                     
-                    // assign the first value (the terminal index) to the assignment token [ ADD || SUB || STAR || DIV ]      
+                    // assign the first value (the terminal index) to the assignment token [ DECIMAL ]      
                     NodeMaster term;
                     term.utype = NODE;
                     term.UNION.Node.type = token.type;
@@ -292,6 +309,8 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     next_token.utype = NODE;
                     next_token.UNION.Node.type = tokens[(*token_cnt) + 1].type;
                     _strcpy(&next_token, tokens[(*token_cnt) + 1].stor);
+                    
+                    printf("next_token: %s\n", next_token.UNION.Node.stor);
                     
                     (*token_cnt)++;
                     

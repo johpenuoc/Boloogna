@@ -48,6 +48,7 @@ void umem(NodeMaster *mem, NodeMaster x, size_t *memsz)
     *memsz += sizeof(x);
     mem->UNION.Nodes.nodes = realloc(mem->UNION.Nodes.nodes, *memsz);
     mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln] = x;
+    printf("added type %s with stor %s into memory at index %d\n", _utypes[x.utype], x.UNION.Node.stor, mem->UNION.Nodes.nodeln);
     mem->UNION.Nodes.nodeln++;
 }
 
@@ -82,10 +83,9 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     
     while (true)
         {
-            printf("-> %s\n", token.stor);
+            //printf("-> %s\n", token.stor);
             if (token.type == RPAREN || token.type == SCOLON) 
                 {
-                    printf("HERE %s\n", token.stor);
                     (*token_cnt)++;
                     return mstack; 
                 }
@@ -116,7 +116,7 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     // fetch the previous token from memory
                     /*NodeList prev_token = mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln];*/
                     
-                    NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln];
+                    NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
                     
                     // assign the first value (the terminal index) to the assignment token [ ADD || SUB || STAR || DIV ]
                     /*NodeList term;
@@ -215,7 +215,12 @@ NodeMaster parse_assignment(Token *tokens, int *token_cnt, NodeMaster *mem, size
     /*NodeList token = mem->UNode.Nodelst.nodelst[mem->UNode.Nodelst.nodeln];
     Token next_token = tokens[(*token_cnt) + 1];*/
     
-    NodeMaster token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln];
+    printf("UTYPE %s\n", _utypes[mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1].utype]);
+    
+    NodeMaster token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
+    /*printf("token>> %s\n", token.UNION.Node.stor);
+    printf("token utype>> %s\n", _utypes[token.utype]);
+    printf("token type>> %s\n", _type_names[token.UNION.Node.type]);*/
     Token next_token = tokens[(*token_cnt) + 1];
     
     // mstack --> ministack, like a branch in a tree
@@ -231,64 +236,32 @@ NodeMaster parse_assignment(Token *tokens, int *token_cnt, NodeMaster *mem, size
     mstack.UNION.Nodes.nodeln = 0;
     
     // assign the first value (the terminal index) to the assignment token [EQUAL]
-    /*NodeList assig;
-    assig.node.type = next_token.type;
-    strcpy(assig.node.stor, next_token.stor);*/
-    
     NodeMaster assig;
     assig.utype = NODE;
     assig.UNION.Node.type = next_token.type;
-    //strcpy(assig.UNION.Node.stor, next_token.stor);
     _strcpy(&assig, next_token.stor);
     
     // copy that value into the stack (actually placing it into the stack)
-    /*mstacksz += sizeof(assig);
-    mstack.UNode.Nodelst.nodelst = realloc(mstack.UNode.Nodelst.nodelst, mstacksz);
-    mstack.UNode.Nodelst.nodelst[0] = assig;*/
-    
     mstacksz += sizeof(assig);
     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = assig;
     mstack.UNION.Nodes.nodeln++;
-    
-    // assign left node as a new object
-    /*Token token = tokens[token_cnt];
-    NodeList ltoken;
-    ltoken.node.type = token.type;
-    strcpy(ltoken.node.stor, token.stor);*/
-    
-    // append ltoken object into the stack
-    /*mstacksz += sizeof(token);
-    mstack.UNode.Nodelst.nodelst = realloc(mstack.UNode.Nodelst.nodelst, mstacksz);
-    mstack.UNode.Nodelst.nodelst[1] = token;*/
 
+    // append variable [IDENTIFIER] to be assigned
     mstacksz += sizeof(token);
     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = token;
     mstack.UNION.Nodes.nodeln++;
     
-    // find the assignment value
-    /**token_cnt += 2;
-    NodeList value = parse_expr(tokens, token_cnt, mem);*/
-    
+    // find the assignment value  
     *token_cnt += 2;
-    printf("called parse_expr\n");
     NodeMaster value = parse_expr(tokens, token_cnt, mem, memsz);
-    printf("exiting parse_expr\n");
     
-    // append value into the stack
-    /*mstacksz += sizeof(value);
-    mstack.UNode.Nodelst.nodelst = realloc(mstack.UNode.Nodelst.nodelst, mstacksz);
-    mstack.UNode.Nodelst.nodelst[2] = value;
-    mstack.UNode.Nodelst.nodeln = 3;*/
-    
+    // append value into the stack   
     mstacksz += sizeof(value);
     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-    debugp("just checking");
     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = value;
     mstack.UNION.Nodes.nodeln++;
-    
-    debugp("help");
     
     return mstack;
 }
@@ -314,7 +287,7 @@ NodeMaster stack(List *tokens)
     _stack.UNION.Nodes.nodes = NULL;
     _stack.UNION.Nodes.nodeln = 0;
     
-    // initialize the entire memory _stack
+    // initialize the entire memory stack
     /*size_t memsz = 2;
     NodeList *mem = malloc(sizeof(NodeList) * memsz);
     //mem[0].UNode.Nodelst.nodelst = NULL;
@@ -333,7 +306,7 @@ NodeMaster stack(List *tokens)
             Token token = _tokens[token_cnt];
             Token next_token = _tokens[token_cnt + 1];
             
-            printf("[%s]\t\t%s\n", _type_names[token.type], token.stor);
+            //printf("[%s]\t\t%s\n", _type_names[token.type], token.stor);
             
             // checking if any are terminal
             const enum _TYPE_ TOKEN_TYPE = token.type;
@@ -341,13 +314,14 @@ NodeMaster stack(List *tokens)
             
             // always update memory with each token
             //    we first create a Node for the current token
-            NodeMaster tn;
+            /*NodeMaster tn;
             tn.utype = NODE;
             tn.UNION.Node.type = TOKEN_TYPE;
             //strcpy(tn.UNION.Node.stor, token.stor);
             _strcpy(&tn, token.stor);
             //    then store it in memory
-            umem(&mem, tn, &memsz);
+            umem(&mem, tn, &memsz);*/
+            amem(&mem, &memsz, _tokens, ptoken_cnt);
             
             switch (TOKEN_TYPE)
             {
@@ -359,7 +333,6 @@ NodeMaster stack(List *tokens)
                     else if (NEXT_TOKEN_TYPE == EQUAL)
                         {
                             NodeMaster mstack = parse_assignment(_tokens, ptoken_cnt, &mem, &memsz);
-                            printf("COMPLETED\n");
                             
                             // append it to the stack
                             /*_stacksz += sizeof(mstack);

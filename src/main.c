@@ -31,8 +31,7 @@ void printn(NodeMaster *stack)
 {
     if (stack->utype == NODE)
         {
-            printf("Node TYPE:\t\t%s\n", utype_names[stack->utype]);
-            printf("Node STOR:\t\t%s\n", type_names[stack->utype]);
+            printf("UTYPE: [%s]\t||\tTYPE: [%s]\t||\tSTOR: [%s]\n", utype_names[stack->utype], type_names[stack->UNION.Node.type], stack->UNION.Node.stor);
         }
     else
         {

@@ -35,6 +35,15 @@ const char *_utypes[] = {
     "NODE", "NODES"
 };
 
+// save to mstack
+void sto_mstack(NodeMaster *mstack, size_t *mstacksz, NodeMaster node_s)
+{
+    *mstacksz += sizeof(node_s);
+    mstack->UNION.Nodes.nodes = realloc(mstack->UNION.Nodes.nodes, *mstacksz);
+    mstack->UNION.Nodes.nodes[mstack->UNION.Nodes.nodeln] = node_s;
+    mstack->UNION.Nodes.nodeln++;
+}
+
 void _strcpy(NodeMaster *node, char *stor)
 {
     int strln = strlen(stor) + 1;
@@ -48,7 +57,7 @@ void umem(NodeMaster *mem, NodeMaster x, size_t *memsz)
     *memsz += sizeof(x);
     mem->UNION.Nodes.nodes = realloc(mem->UNION.Nodes.nodes, *memsz);
     mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln] = x;
-    printf("added type %s with stor %s into memory at index %d\n", _utypes[x.utype], x.UNION.Node.stor, mem->UNION.Nodes.nodeln);
+    //printf("added type %s with stor %s into memory at index %d\n", _utypes[x.utype], x.UNION.Node.stor, mem->UNION.Nodes.nodeln);
     mem->UNION.Nodes.nodeln++;
 }
 
@@ -78,7 +87,7 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     
     while (true)
         {
-            printf("-> %s\n", token.stor);
+            //printf("-> %s\n", token.stor);
             if (token.type == RPAREN || token.type == SCOLON) 
                 {                   
                     NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
@@ -136,10 +145,10 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     if (tokens[(*token_cnt) + 1].type == LPAREN)
                         {
                             (*token_cnt) += 2;
-                            debugp("entering");
+                            //debugp("entering");
                             next_token = parse_expr(tokens, token_cnt, mem, memsz);
                             (*token_cnt)--;
-                            debugp("exiting");
+                            //debugp("exiting");
                         }
                     else
                         {
@@ -220,6 +229,98 @@ NodeMaster parse_assignment(Token *tokens, int *token_cnt, NodeMaster *mem, size
     return mstack;
 }
 
+//player.box.x
+// [.] [player] [[.] [box] [[.] [x]]]
+NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
+{
+    Token token = tokens[*token_cnt];
+    
+    // mstack --> ministack, like a branch in a tree 
+    size_t mstacksz = 0;
+    NodeMaster mstack;
+    mstack.utype = NODES;
+    mstack.UNION.Nodes.nodes = NULL;
+    mstack.UNION.Nodes.nodeln = 0;
+    
+    while (true)
+        {
+            //printf("-> %s\n", token.stor);
+            if (token.type == SCOLON) 
+                {                   
+                    NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
+                    mstacksz += sizeof(mmstack);
+                    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
+                    mstack.UNION.Nodes.nodeln++;
+                    
+                    (*token_cnt)++;
+                    return mstack; 
+                }
+            else if (token.type == DECIMAL)
+                {
+                    // this is a mini-mini stack --> [OP][x][y]                
+                    size_t mmstacksz = 0;
+                    NodeMaster mmstack;
+                    mmstack.utype = NODES;
+                    mmstack.UNION.Nodes.nodes = NULL;
+                    mmstack.UNION.Nodes.nodeln = 0;
+                    
+                    // fetch the previous token from memory
+                    NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
+                    
+                    // assign the first value (the terminal index) to the assignment token [ ADD || SUB || STAR || DIV ]      
+                    NodeMaster term;
+                    term.utype = NODE;
+                    term.UNION.Node.type = token.type;
+                    _strcpy(&term, token.stor);
+                    
+                    // copy it into mini-mini stack
+                    mmstacksz += sizeof(term);
+                    mmstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
+                    mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln] = term;
+                    mmstack.UNION.Nodes.nodeln++;
+                    
+                    // copy the next two values into the mini stack
+                    //     left token (which is in mem) 
+                    mmstacksz += sizeof(prev_token);
+                    mmstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
+                    mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln] = prev_token;
+                    mmstack.UNION.Nodes.nodeln++;
+                    
+                    //    right token
+                    NodeMaster next_token;
+                    next_token.utype = NODE;
+                    next_token.UNION.Node.type = tokens[(*token_cnt) + 1].type;
+                    _strcpy(&next_token, tokens[(*token_cnt) + 1].stor);
+                    
+                    (*token_cnt)++;
+                    
+                    mmstacksz += sizeof(next_token);
+                    mmstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
+                    mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln] = next_token;
+                    mmstack.UNION.Nodes.nodeln++;
+                    
+                    // update the memory
+                    umem(mem, mmstack, memsz);
+                    
+                    // update mstack with mmstack       
+                    /*mstacksz += sizeof(mmstack);
+                    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
+                    mstack.UNION.Nodes.nodeln++;*/
+                    
+                }
+            else
+                {
+                    amem(mem, memsz, tokens, token_cnt);
+                }
+                
+            (*token_cnt)++;
+            token = tokens[*token_cnt];
+        }
+    
+}
+
 
 NodeMaster stack(List *tokens)
 {
@@ -275,7 +376,13 @@ NodeMaster stack(List *tokens)
                         }
                     else if (NEXT_TOKEN_TYPE == DECIMAL)
                         {
-                            // parse_IDlinker
+                            NodeMaster mstack = parse_IDlinker(_tokens, ptoken_cnt, &mem, &memsz);
+                        
+                            // append it to the stack       
+                            stacksz += sizeof(mstack);
+                            _stack.UNION.Nodes.nodes = realloc(_stack.UNION.Nodes.nodes, stacksz);
+                            _stack.UNION.Nodes.nodes[ _stack.UNION.Nodes.nodeln] = mstack;
+                            _stack.UNION.Nodes.nodeln++;
                         }
                     else if (NEXT_TOKEN_TYPE == ADD || NEXT_TOKEN_TYPE == SUB || NEXT_TOKEN_TYPE == STAR || NEXT_TOKEN_TYPE == DIV)
                         {

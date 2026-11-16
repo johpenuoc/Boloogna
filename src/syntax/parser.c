@@ -134,7 +134,10 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     if (tokens[(*token_cnt) + 1].type == LPAREN)
                         {
                             (*token_cnt) += 2;
+                            debugp("entering");
                             next_token = parse_expr(tokens, token_cnt, mem, memsz);
+                            (*token_cnt)--;
+                            debugp("exiting");
                         }
                     else
                         {

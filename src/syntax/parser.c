@@ -96,6 +96,8 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     
                     NodeMaster tmp = parse_expr(tokens, token_cnt, mem, memsz);
                     umem(mem, tmp, memsz);
+                    
+                    (*token_cnt)--;
                 }
             
             else if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV)

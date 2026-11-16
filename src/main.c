@@ -32,7 +32,7 @@ void printn(NodeMaster *stack, int *depth)
     for (int j = 0; j < *depth; ++j) printf("\t");
     if (stack->utype == NODE)
         {
-            printf("TYPE: [%13s] \t STOR: [%13s]\n", type_names[stack->UNION.Node.type], stack->UNION.Node.stor);
+            printf("TYPE: [%11s] \t STOR: [%9s]\n", type_names[stack->UNION.Node.type], stack->UNION.Node.stor);
         }
     else
         {

@@ -78,9 +78,15 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     
     while (true)
         {
-            //printf("-> %s\n", token.stor);
+            printf("-> %s\n", token.stor);
             if (token.type == RPAREN || token.type == SCOLON) 
-                {
+                {                   
+                    NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
+                    mstacksz += sizeof(mmstack);
+                    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
+                    mstack.UNION.Nodes.nodeln++;
+                    
                     (*token_cnt)++;
                     return mstack; 
                 }
@@ -132,7 +138,6 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                         }
                     else
                         {
-  
                             next_token.utype = NODE;
                             next_token.UNION.Node.type = tokens[(*token_cnt) + 1].type;
                             _strcpy(&next_token, tokens[(*token_cnt) + 1].stor);
@@ -149,10 +154,10 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     umem(mem, mmstack, memsz);
                     
                     // update mstack with mmstack       
-                    mstacksz += sizeof(mmstack);
+                    /*mstacksz += sizeof(mmstack);
                     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
                     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
-                    mstack.UNION.Nodes.nodeln++;
+                    mstack.UNION.Nodes.nodeln++;*/
                     
                 }
             else

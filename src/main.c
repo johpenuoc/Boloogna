@@ -27,18 +27,21 @@ const char *utype_names[] = {
     "NODE", "NODES"
 };
 
-void printn(NodeMaster *stack)
+void printn(NodeMaster *stack, int *depth)
 {
+    for (int j = 0; j < *depth; ++j) printf("\t");
     if (stack->utype == NODE)
         {
             printf("UTYPE: [%s]\t||\tTYPE: [%s]\t||\tSTOR: [%s]\n", utype_names[stack->utype], type_names[stack->UNION.Node.type], stack->UNION.Node.stor);
         }
     else
         {
+            printf("NODES:\n");
+            (*depth)++;
             for (int i = 0; i < stack->UNION.Nodes.nodeln; ++i)
                 {
                     NodeMaster node_s = stack->UNION.Nodes.nodes[i];
-                    printn(&node_s);
+                    printn(&node_s, depth);
                 }
         }
 }
@@ -72,7 +75,9 @@ int main(int argc, char **argv)
     
     printf(": %d\n", _stack.UNION.Nodes.nodeln);
     
-    printn(&_stack);
+    int depth;
+    depth = 0;
+    printn(&_stack, &depth);
     
     // =======================================
     

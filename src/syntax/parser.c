@@ -75,7 +75,6 @@ void amem(NodeMaster *mem, size_t *memsz, Token *tokens, int *token_cnt)
     umem(mem, tnode, memsz);
 }
 
-
 NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
 {
     Token token = tokens[*token_cnt];
@@ -90,7 +89,7 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     while (true)
         {
             printf("-> %s\n", token.stor);
-            if (token.type == RPAREN || token.type == SCOLON) 
+            if (token.type == RPAREN || token.type == SCOLON || token.type == COMMA) 
                 {                   
                     NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
                     mstacksz += sizeof(mmstack);
@@ -115,6 +114,17 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     // parse_IDlinker expects to start on the DECIMAL
                     NodeMaster idlk = parse_IDlinker(tokens, token_cnt, mem, memsz);
                     umem(mem, idlk, memsz);
+                    
+                    // parse_expr (the function we're in) expects to go through every token.
+                    // parse_IDlinker puts us one ahead. hence '--'
+                    (*token_cnt)--;
+                }
+                         // might have to be tokens[(*token_cnt) + 1].type == IDENTIFIER
+            else if (token.type == LPAREN && tokens[*token_cnt].type == IDENTIFIER)
+                {
+                    // in other words, this checks whether its a function or not
+                    NodeMaster func = parse_func(tokens, token_cnt, mem, memsz);
+                    umem(mem, func, memsz);
                     
                     // parse_expr (the function we're in) expects to go through every token.
                     // parse_IDlinker puts us one ahead. hence '--'
@@ -157,6 +167,15 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                         {
                             (*token_cnt) += 2;
                             next_token = parse_expr(tokens, token_cnt, mem, memsz);
+                            (*token_cnt)--;
+                        }
+                    else if (tokens[(*token_cnt) + 1].type == IDENTIFIER && tokens[(*token_cnt) + 2].type == DECIMAL)
+                        {
+                            (*token_cnt)++;
+                            amem(mem, memsz, tokens, token_cnt);
+                            
+                            (*token_cnt)++;
+                            next_token = parse_IDlinker(tokens, token_cnt, mem, memsz);
                             (*token_cnt)--;
                         }
                     else
@@ -238,6 +257,65 @@ NodeMaster parse_assignment(Token *tokens, int *token_cnt, NodeMaster *mem, size
     return mstack;
 }
 
+NodeMaster parse_func(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
+{
+    // this is the function-name token [IDENTIFIER]
+    Token token = tokens[*token_cnt];
+    
+    // mstack --> ministack, like a branch in a tree 
+    size_t mstacksz = 0;
+    NodeMaster mstack;
+    mstack.utype = NODES;
+    mstack.UNION.Nodes.nodes = NULL;
+    mstack.UNION.Nodes.nodeln = 0;
+      
+    // get the function-name identifier
+    NodeMaster func_name;
+    func_name.utype = NODE;
+    func_name.UNION.Node.type = token.type;
+    _strcpy(&func_name, token.stor);
+    
+    // append it into mstack
+    sto_mstack(&mstack, &mstacksz, func_name);
+    
+    // this is to catch each argument in a function call
+    size_t argsz = 0;
+    NodeMaster args;
+    args.utype = NODES;
+    args.UNION.Nodes.nodes = NULL;
+    args.UNION.Nodes.nodeln = 0;
+    
+    *token_cnt += 2;
+    while (true)
+        {       
+            token = tokens[*token_cnt];
+            
+            if (tokens[(*token_cnt) - 1].type == RPAREN) break;
+            
+            printf(">>> %s\n", token.stor);
+    
+            NodeMaster arg = parse_expr(tokens, token_cnt, mem, memsz);
+            umem(mem, arg, memsz);
+            
+            argsz += sizeof(arg);
+            args.UNION.Nodes.nodes = realloc(args.UNION.Nodes.nodes, argsz);
+            args.UNION.Nodes.nodes[args.UNION.Nodes.nodeln] = arg;
+            args.UNION.Nodes.nodeln++;
+        }
+    debugp("here?");
+    
+    /*NodeMaster tmp = parse_expr(tokens, token_cnt, mem, memsz);
+    umem(mem, tmp, memsz);*/
+    umem(mem, args, memsz);
+    
+    // append it into mstack
+    sto_mstack(&mstack, &mstacksz, args);
+    
+    return mstack;
+    
+    //(*token_cnt)--;
+}
+
 //player.box.x
 // [.] [player] [[.] [box] [[.] [x]]]
 NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
@@ -283,7 +361,7 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     
                     // fetch the previous token from memory
                     NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
-                    printf("prev token: %s\n", prev_token.UNION.Node.stor);
+                    //printf("prev token: %s\n", prev_token.UNION.Node.stor);
                     
                     // assign the first value (the terminal index) to the assignment token [ DECIMAL ]      
                     NodeMaster term;
@@ -310,8 +388,6 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     next_token.UNION.Node.type = tokens[(*token_cnt) + 1].type;
                     _strcpy(&next_token, tokens[(*token_cnt) + 1].stor);
                     
-                    printf("next_token: %s\n", next_token.UNION.Node.stor);
-                    
                     (*token_cnt)++;
                     
                     mmstacksz += sizeof(next_token);
@@ -327,7 +403,6 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
                     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
                     mstack.UNION.Nodes.nodeln++;*/
-                    
                 }
             else
                 {
@@ -381,11 +456,19 @@ NodeMaster stack(List *tokens)
                 case IDENTIFIER:  
                     if (NEXT_TOKEN_TYPE == LPAREN)
                         {
-                            // parse_function
+                            NodeMaster func = parse_func(_tokens, ptoken_cnt, &mem, &memsz);
+                            
+                            // append it to the stack       
+                            stacksz += sizeof(func);
+                            _stack.UNION.Nodes.nodes = realloc(_stack.UNION.Nodes.nodes, stacksz);
+                            _stack.UNION.Nodes.nodes[ _stack.UNION.Nodes.nodeln] = func;
+                            _stack.UNION.Nodes.nodeln++;
+                            
                         }
                     else if (NEXT_TOKEN_TYPE == EQUAL)
                         {
                             NodeMaster mstack = parse_assignment(_tokens, ptoken_cnt, &mem, &memsz);
+                            
                             // append it to the stack       
                             stacksz += sizeof(mstack);
                             _stack.UNION.Nodes.nodes = realloc(_stack.UNION.Nodes.nodes, stacksz);
@@ -424,6 +507,10 @@ NodeMaster stack(List *tokens)
                     
                 case EQUAL:
                     // prase_expr
+                    break;
+                    
+                default:
+                    token_cnt++;
                     break;
             }
         }

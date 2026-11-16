@@ -21,3 +21,8 @@ parse_expr WORKS! I mean, I've tested it fairly thoroughly, though I'm sure it i
 Pretty cool! Now, it understands what I call 'linkers'. That is player.x, conn.port, something.something_else.another_something_else. Pretty cool I think! The next step is to introduce functions. It should be able to recognise a function, its arguments, when it's in an expression and when its simply being called. It should also be able to handle expressions inside of the function. That is, arguments. function(2 + 4, player.x, conn.port, ...); I think it'll be more or less the same as the parse_expr and parse_IDlinker. Honestly, I believe most of it will be, considering that the algorithm is very generalised. 
 
 Time to get coding! I'm plugged in.
+
+### 16:34
+Currently, the parse_func is proving to be slightly more difficult. I don't believe that's because of complexity, but rather my being not prudent; I hadn't thought it through very deeply. 
+
+I will continue coding.

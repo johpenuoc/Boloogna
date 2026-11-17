@@ -119,15 +119,12 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     // parse_IDlinker puts us one ahead. hence '--'
                     (*token_cnt)--;
                 }
-                         // might have to be tokens[(*token_cnt) + 1].type == IDENTIFIER
             else if (token.type == IDENTIFIER && tokens[(*token_cnt) + 1].type == LPAREN)
                 {
                     // in other words, this checks whether its a function or not
                     NodeMaster func = parse_func(tokens, token_cnt, mem, memsz);
                     umem(mem, func, memsz);
                     
-                    // parse_expr (the function we're in) expects to go through every token.
-                    // parse_IDlinker puts us one ahead. hence '--'
                     (*token_cnt)--;
                 }
             else if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV)
@@ -306,7 +303,6 @@ NodeMaster parse_func(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
             args.UNION.Nodes.nodes[args.UNION.Nodes.nodeln] = arg;
             args.UNION.Nodes.nodeln++;
         }
-    debugp("here?");
     
     /*NodeMaster tmp = parse_expr(tokens, token_cnt, mem, memsz);
     umem(mem, tmp, memsz);*/
@@ -388,11 +384,21 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     
                     //    right token
                     NodeMaster next_token;
-                    next_token.utype = NODE;
-                    next_token.UNION.Node.type = tokens[(*token_cnt) + 1].type;
-                    _strcpy(&next_token, tokens[(*token_cnt) + 1].stor);
-                    
-                    (*token_cnt)++;
+                    if (tokens[(*token_cnt) + 2].type == LPAREN)
+                        {
+                            (*token_cnt)++;
+                            next_token = parse_func(tokens, token_cnt, mem, memsz);
+                            
+                            (*token_cnt)--;
+                        }
+                    else
+                        {
+                            next_token.utype = NODE;
+                            next_token.UNION.Node.type = tokens[(*token_cnt) + 1].type;
+                            _strcpy(&next_token, tokens[(*token_cnt) + 1].stor);
+                            
+                            (*token_cnt)++;
+                        };
                     
                     mmstacksz += sizeof(next_token);
                     mmstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);

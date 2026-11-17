@@ -1,1 +1,1 @@
-function(arg1, func(farg1));
+player.box.movex(dt);

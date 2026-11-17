@@ -46,3 +46,19 @@ would work. Hence making it more robust. We will see. I do believe that, if it d
 
 ### 8:59
 Nevermind. Nothing can stop the coding. Joking. I got everything done pretty quick. There's always far less than i anticipate.
+
+### 9:07
+Didn't expect to be back here again. However, pretty quickly, I managed to find the logic bug hiding in my code. Now, when a function is called, it can contain however many functions as arguemtns required, as the recursive system functions properly. 
+
+Next is to see whether it works with linking...
+
+### 9:20
+I believe it is now working! So now it recognises:
+
+player.box.movex(dt, ...); 
+
+I do believe linking will also work with
+
+func().something.something
+
+however, I'm not sure I'm going to be implimenting that within my language. [FUNCTION] will not be a class or object which can have attributes. So [DECIMAL] won't do anything. It'll cause an error.

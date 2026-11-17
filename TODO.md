@@ -43,3 +43,6 @@ but thats it. Im not sure whether
 --> function(arg1, function2(arg1, 1 + 4 * (0.5 - 1)), player.x);
 
 would work. Hence making it more robust. We will see. I do believe that, if it doesn't work, a more thorough reworking of the program will have to commence. I did kind-of rush it, and I hadn't thought it through. I kinda just thought "I will simply copy-and-paste the code for parse_expr, change it slightly, and hope for the best" xD To be honest, most programming is 'hoping for the best'!
+
+### 8:59
+Nevermind. Nothing can stop the coding. Joking. I got everything done pretty quick. There's always far less than i anticipate.

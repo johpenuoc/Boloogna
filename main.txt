@@ -1,1 +1,1 @@
-function(3, 6 - (3 + player.x));
+function(arg1, func(farg1));

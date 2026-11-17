@@ -120,7 +120,7 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     (*token_cnt)--;
                 }
                          // might have to be tokens[(*token_cnt) + 1].type == IDENTIFIER
-            else if (token.type == LPAREN && tokens[*token_cnt].type == IDENTIFIER)
+            else if (token.type == IDENTIFIER && tokens[(*token_cnt) + 1].type == LPAREN)
                 {
                     // in other words, this checks whether its a function or not
                     NodeMaster func = parse_func(tokens, token_cnt, mem, memsz);
@@ -215,6 +215,10 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
 NodeMaster parse_assignment(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
 {    
     //printf("UTYPE %s\n", _utypes[mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1].utype]);
+    
+    // =================================================
+    // THIS FUNCTION EXPECTS TO BE ON [IDENTIFIER] FIRST
+    // =================================================
     
     NodeMaster token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
     Token next_token = tokens[(*token_cnt) + 1];

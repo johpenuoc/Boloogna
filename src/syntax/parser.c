@@ -628,6 +628,7 @@ NodeMaster stack(List *tokens)
                     break;
                 case LBRACE:
                     token_cnt++;
+                    debugp("im assuming here");
                     NodeMaster _mstack = parse_scope(_tokens, ptoken_cnt, &mem, &memsz);
                     
                     // append it to the stack       

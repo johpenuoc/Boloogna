@@ -78,3 +78,9 @@ SCOPE will just be collecting a bunch of expressions and whatnot. Effectively, y
 
 ### 9:40
 I'll carry it on later. REASONS.
+
+### 10:35
+I am back (was back about 15 minutes ago...). I've eaten and I've continued development of the 'parse_scope' function. So, it's essentially a rework of the 'stack' function. Essentially, a scope can kind-of be thought of as a mini-program. Seperate (not really but just how I'm thinking of it) from the rest of the program.
+
+### 11:30
+I GOT IT WORKING. I haven't really tested it and I'm rushing (I have a class in less than 30 minutes), but anyways, it appears to work. I'm not sure whether scopes in scopes will work, but I'll see to it later. For now, this is fine. Good work! 

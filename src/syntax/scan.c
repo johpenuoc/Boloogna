@@ -8,7 +8,7 @@
 
 List preprocessor(FILE *file)
 {
-    int char_max = 1;
+    int char_max = 2;
     char *buf = malloc(sizeof(char) * char_max);
     int cnt = 0;
     
@@ -16,8 +16,6 @@ List preprocessor(FILE *file)
     char mode_type;
     
     char c;
-    bool halt = false;
-    char prev;
     while ((c = fgetc(file)) != EOF)
         {
             if (cnt >= char_max - 1)
@@ -38,12 +36,6 @@ List preprocessor(FILE *file)
                 {   
                     if (is_in(MODE, c, 2))
                         {
-                            if (halt)
-                                {
-                                    buf[cnt - 2] = ' ';
-                                    buf[cnt - 1] = prev;
-                                    halt = false;
-                                }
                             in_mode = true;
                             mode_type = c;
                             
@@ -55,40 +47,20 @@ List preprocessor(FILE *file)
                     bool is_term = is_in(TERM, c, 16);
                     if (!in_mode && is_term)
                         {   
-                            if (c == '=')
-                                {
-                                    if (!halt)
-                                        {
-                                            prev = c;
-                                            halt = true;
-                                            cnt++; 
-                                        }
-                                    else
-                                        {
-                                            buf[cnt - 2] = ' ';
-                                            buf[cnt - 1] = prev;
-                                            halt = false;
-                                        }
-                                }
-                            else
-                                {
-                                    buf[cnt] = ' ';
-                                    cnt++;
-                                }
+                            buf[cnt] = ' ';
+                            cnt++;
                         }
                         
                     
-                    if (!halt)
-                        {
-                            buf[cnt] = c;
-                            cnt++;
-                            
-                            if (is_term)
-                                {
-                                    buf[cnt] = ' ';
-                                    cnt++;
-                                }
-                        }
+
+                        buf[cnt] = c;
+                        cnt++;
+                        
+                        if (is_term)
+                            {
+                                buf[cnt] = ' ';
+                                cnt++;
+                            }
                 }
             else
                 {              
@@ -322,6 +294,8 @@ List tokenize(FILE *file)
     // combine symbols like '!' and '=' to create multi-char tokens
     // like NOT_EQUAL_TO
     combine_tokens(tokens, token_cnt_ptr, NOT, EQUAL, NOT_EQUAL_TO);
+    // i forgot i had this...
+    combine_tokens(tokens, token_cnt_ptr, EQUAL, EQUAL, EQUIVALENT);
         
     
     return (List){ .element = tokens, .length = token_cnt};

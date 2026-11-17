@@ -85,7 +85,7 @@ int main(int argc, char **argv)
             printf("[%s] \t %s\n", type_names[token[i].type], token[i].stor);
         }
     
-    NodeMaster _stack = stack(&token_list);
+    /*NodeMaster _stack = stack(&token_list);
     free(token_list.element);
     
     int depth;

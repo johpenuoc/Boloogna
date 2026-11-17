@@ -559,7 +559,7 @@ NodeMaster stack(List *tokens)
     mem.UNION.Nodes.nodes = NULL;
     mem.UNION.Nodes.nodeln = 0;
     
-    while (token_cnt < tokens->length - 1)
+    while (token_cnt < tokens->length - 2)
         {
             Token token = _tokens[token_cnt];
             Token next_token = _tokens[token_cnt + 1];
@@ -571,6 +571,8 @@ NodeMaster stack(List *tokens)
             // always update memory with each token
             //    we first create a Node for the current token
             amem(&mem, &memsz, _tokens, ptoken_cnt);
+            
+            printf("::::::: %s %s %s\n", _type_names[TOKEN_TYPE], token.stor, _type_names[NEXT_TOKEN_TYPE]);
             
             switch (TOKEN_TYPE)
             {
@@ -638,7 +640,7 @@ NodeMaster stack(List *tokens)
                     _stack.UNION.Nodes.nodeln++;
 
                     token_cnt++;
-                    printf("new token: %s\n", _tokens[token_cnt].stor);
+                    printf("new token: %d %d %s\n", token_cnt, tokens->length - 1, _tokens[token_cnt].stor);
                     break;
                     
                 case EQUAL:

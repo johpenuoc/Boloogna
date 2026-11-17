@@ -88,4 +88,7 @@ I GOT IT WORKING. I haven't really tested it and I'm rushing (I have a class in 
 ### 15:04
 Just got back from a 2 hour class.
 
-I've added STACK_TYPEs. They mark any NODES with a type like EXPRESSION or FUNCTION or ARGUMENTS. It'll make the interpreter easier to code and it won't have to figure out what anything is doing. It is explicitly stated. 
+I've added STACK_TYPEs. They mark any NODES with a type like EXPRESSION or FUNCTION or ARGUMENTS. It'll make the interpreter easier to code and it won't have to figure out what anything is doing. It is explicitly stated.
+
+### 15:18
+The scan.c preprocessor is flawed. It allows for multiple spaces outside of a string. Got to fix that.

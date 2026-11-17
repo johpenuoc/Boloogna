@@ -8,7 +8,7 @@
 
 List preprocessor(FILE *file)
 {
-    int char_max = 2;
+    int char_max = 1;
     char *buf = malloc(sizeof(char) * char_max);
     int cnt = 0;
     
@@ -31,6 +31,7 @@ List preprocessor(FILE *file)
                 }
                 
             if (c == '\n') continue;
+            
             if (!in_mode)
                 {   
                     if (is_in(MODE, c, 2))
@@ -175,11 +176,6 @@ void combine_tokens(Token *tokens, int *token_cnt, enum _TYPE_ T1, enum _TYPE_ T
         }
 }
 
-void separate_tokens(Token *tokens, int *token_cnt, enum _TYPE_ MT, enum _TYPE_ T2)
-{
-    
-}
-
 List tokenize(FILE *file)
 {
     List l = preprocessor(file);
@@ -210,8 +206,9 @@ List tokenize(FILE *file)
                     in_mode = false;
                     curr = incr(curr, len_ptr, indv[i]);
                 }
-                
-            else if (!in_mode && indv[i] == ' ' && indv[i - 1] != ' ')
+            
+            //                                                           this condition seems to have fixed it??
+            else if (!in_mode && indv[i] == ' ' && indv[i - 1] != ' ' && i > 0)
                 {    
                     curr[(*len_ptr) - 1] = '\0';  
                     tokens[token_cnt - 1].stor = curr;

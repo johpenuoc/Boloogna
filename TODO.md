@@ -92,3 +92,8 @@ I've added STACK_TYPEs. They mark any NODES with a type like EXPRESSION or FUNCT
 
 ### 15:18
 The scan.c preprocessor is flawed. It allows for multiple spaces outside of a string. Got to fix that.
+
+## 15:32
+I got to get to class quickly. However, I did indeed fix the problem. 
+
+Next will be IF statements.

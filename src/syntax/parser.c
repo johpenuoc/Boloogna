@@ -398,6 +398,37 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
     
 }
 
+NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
+{
+    // =================================================
+    // THIS FUNCTION EXPECTS TO BE ON [IF] FIRST
+    // =================================================
+    
+    // initialize mstack
+    size_t mstacksz = 0;
+    NodeMaster mstack;
+    mstack.utype = NODES;
+    mstack.UNION.Nodes.nodes = NULL;
+    mstack.UNION.Nodes.nodeln = 0;
+    mstack.UNION.Nodes.type = IF;
+    
+    // grab first token
+    // which should be the [IF] token, btw
+    size_t if_tokensz = 0;
+    NodeMaster if_token;
+    if_token.utype = NODE;
+    if_token.UNION.Node.type = mem->UNION.Node.type;
+    _strcpy(if_token, mem->UNION.Node.stor);
+    
+    // append if_token into mstack 
+    mstacksz += sizeof(if_token);
+    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = if_token;
+    mstack.UNION.Nodes.nodeln++;
+    
+    
+}
+
 // anything that's contained in '{}'
 NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
 {

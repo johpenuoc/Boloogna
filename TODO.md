@@ -97,3 +97,10 @@ The scan.c preprocessor is flawed. It allows for multiple spaces outside of a st
 I got to get to class quickly. However, I did indeed fix the problem. 
 
 Next will be IF statements.
+
+## 18:46
+Class was incredibly boring.
+
+Anyways, not so much about programming per-say, however, I have come up with a better idea than 'Boloogna'... MICRO. Meaning Massively Important Coding Repository Origin. It's supposed to be a joke if you couldn't tell. It's neither massive, massively important, a massively important repository, or a massively important repository origin... FOR ANYTHING. It is, however, a 'coding' language. 
+
+I should probably get to some actualy coding now, lul.

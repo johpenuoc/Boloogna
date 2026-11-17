@@ -36,6 +36,7 @@ const char *_utypes[] = {
 };
 
 NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
+NodeMaster scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 
 // save to mstack
 void sto_mstack(NodeMaster *mstack, size_t *mstacksz, NodeMaster node_s)
@@ -423,6 +424,51 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
             token = tokens[*token_cnt];
         }
     
+}
+
+// anything that's contained in '{}'
+
+NodeMaster scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
+{
+    Token token = tokens[*token_cnt];
+    
+    // mstack --> ministack, like a branch in a tree 
+    size_t mstacksz = 0;
+    NodeMaster mstack;
+    mstack.utype = NODES;
+    mstack.UNION.Nodes.nodes = NULL;
+    mstack.UNION.Nodes.nodeln = 0;
+    
+    while (true)
+        {
+            //printf("-> %s\n", token.stor);
+            /*bool endID;
+            enum _TYPE_ tokentype = tokens[*token_cnt].type;
+            enum _TYPE_ ntokentype = tokens[(*token_cnt) + 1].type;
+            if (*token_cnt > 0 && tokentype == IDENTIFIER && ntokentype == DECIMAL) endID = false;
+            else if (*token_cnt > 0 && tokentype == IDENTIFIER && ntokentype != DECIMAL) endID = true;
+            else endID = false;*/
+            
+            // we call a specialised 'stack' function
+            
+            if (token.type == RBRACE) 
+                {                   
+                    NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
+                    mstacksz += sizeof(mmstack);
+                    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
+                    mstack.UNION.Nodes.nodeln++;
+                    
+                    return mstack; 
+                }
+            else
+                {
+                    amem(mem, memsz, tokens, token_cnt);
+                }
+                
+            (*token_cnt)++;
+            token = tokens[*token_cnt];
+        }
 }
 
 

@@ -62,3 +62,19 @@ I do believe linking will also work with
 func().something.something
 
 however, I'm not sure I'm going to be implimenting that within my language. [FUNCTION] will not be a class or object which can have attributes. So [DECIMAL] won't do anything. It'll cause an error.
+
+### 9:30
+Next shall be... SCOPES.
+
+The main idea being:
+
+{} <-- this is a scope
+
+It will be called in certain statements, but also all around the code -- not jsut in statements. 
+
+[IF][STMT][SCOPE][(optional)ELSE]
+
+SCOPE will just be collecting a bunch of expressions and whatnot. Effectively, you can write anything in a scope. However, whatever was initialized in the scope will be deleted once out of the scope. Unless its writing to something initialized outside of the scope.
+
+### 9:40
+I'll carry it on later. REASONS.

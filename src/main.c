@@ -80,6 +80,11 @@ int main(int argc, char **argv)
     List token_list = tokenize(file);
     Token *token = (Token *)(token_list.element);
     
+    for (int i = 0; i < token_list.length - 1; ++i)
+        {
+            printf("[%s] \t %s\n", type_names[token[i].type], token[i].stor);
+        }
+    
     NodeMaster _stack = stack(&token_list);
     free(token_list.element);
     

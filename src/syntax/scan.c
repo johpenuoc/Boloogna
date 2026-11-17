@@ -16,6 +16,8 @@ List preprocessor(FILE *file)
     char mode_type;
     
     char c;
+    bool halt = false;
+    char prev;
     while ((c = fgetc(file)) != EOF)
         {
             if (cnt >= char_max - 1)
@@ -36,27 +38,56 @@ List preprocessor(FILE *file)
                 {   
                     if (is_in(MODE, c, 2))
                         {
+                            if (halt)
+                                {
+                                    buf[cnt - 2] = ' ';
+                                    buf[cnt - 1] = prev;
+                                    halt = false;
+                                }
                             in_mode = true;
                             mode_type = c;
                             
                             buf[cnt] = ' ';
                             cnt++;
                         }
+                        
                     
                     bool is_term = is_in(TERM, c, 16);
                     if (!in_mode && is_term)
-                        {
-                            buf[cnt] = ' ';
-                            cnt++;
+                        {   
+                            if (c == '=')
+                                {
+                                    if (!halt)
+                                        {
+                                            prev = c;
+                                            halt = true;
+                                            cnt++; 
+                                        }
+                                    else
+                                        {
+                                            buf[cnt - 2] = ' ';
+                                            buf[cnt - 1] = prev;
+                                            halt = false;
+                                        }
+                                }
+                            else
+                                {
+                                    buf[cnt] = ' ';
+                                    cnt++;
+                                }
                         }
                         
-                    buf[cnt] = c;
-                    cnt++;
                     
-                    if (is_term)
+                    if (!halt)
                         {
-                            buf[cnt] = ' ';
+                            buf[cnt] = c;
                             cnt++;
+                            
+                            if (is_term)
+                                {
+                                    buf[cnt] = ' ';
+                                    cnt++;
+                                }
                         }
                 }
             else

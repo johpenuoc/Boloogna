@@ -339,7 +339,7 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     mmstack.utype = NODES;
                     mmstack.UNION.Nodes.nodes = NULL;
                     mmstack.UNION.Nodes.nodeln = 0;
-                    mmstack.UNION.Nodes.type = FRACTIONAL;
+                    mmstack.UNION.Nodes.type = ID_LINKER;
                     
                     // fetch the previous token from memory
                     NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
@@ -398,6 +398,21 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
     
 }
 
+NodeMaster parse_stmt(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
+{
+    // =================================================
+    // THIS FUNCTION EXPECTS TO BE ON [EQUIVALENT] FIRST
+    // =================================================
+    
+    // initialize mstack
+    /*size_t mstacksz = 0;
+    NodeMaster mstack;
+    mstack.utype = NODES;
+    mstack.UNION.Nodes.nodes = NULL;
+    mstack.UNION.Nodes.nodeln = 0;
+    mstack.UNION.Nodes.type = IF;*/
+}
+
 NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
 {
     // =================================================
@@ -405,7 +420,7 @@ NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *mems
     // =================================================
     
     // initialize mstack
-    size_t mstacksz = 0;
+    /*size_t mstacksz = 0;
     NodeMaster mstack;
     mstack.utype = NODES;
     mstack.UNION.Nodes.nodes = NULL;
@@ -424,7 +439,7 @@ NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *mems
     mstacksz += sizeof(if_token);
     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = if_token;
-    mstack.UNION.Nodes.nodeln++;
+    mstack.UNION.Nodes.nodeln++;*/
     
     
 }

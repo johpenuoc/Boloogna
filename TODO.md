@@ -107,3 +107,6 @@ I should probably get to some actualy coding now, lul.
 
 ### 20:24
 Apparently I've found another problem with scan.c. Basically, IT DOESN'T RECOGNISE EQUIVALENCE '=='. Genuinly no idea why. I hate running back over old code. I write it poorly, and thus I can never read it again. I won't be able to sleep knowing this is there.
+
+### 21:29 
+I have to get to bed. Anyways, I need to fix that RPAREN thing tomorrow, after my test...

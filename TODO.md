@@ -26,3 +26,20 @@ Time to get coding! I'm plugged in.
 Currently, the parse_func is proving to be slightly more difficult. I don't believe that's because of complexity, but rather my being not prudent; I hadn't thought it through very deeply. 
 
 I will continue coding.
+
+### 17:14
+I believe it to be working right now. It's dinner time, and so I'm not going to be thoroughly testing it today. I'm sure there are logic bugs, but at the moment it works pretty fine.
+
+## 17/11/26
+### 8:41
+Not going to develop much today. I have some classes and some work to finish. Perhaps later, but not too sure. I also have a test tomorrow, so we will see; I have to revise. 
+
+If I do code today, I will be developing the current code: making it more robust. I know that it 'works' with simple lines of code, for example:
+
+--> function(arg1, arg2, arg3.obj1, 1 + 4 / (8 * 0.5));
+
+but thats it. Im not sure whether
+
+--> function(arg1, function2(arg1, 1 + 4 * (0.5 - 1)), player.x);
+
+would work. Hence making it more robust. We will see. I do believe that, if it doesn't work, a more thorough reworking of the program will have to commence. I did kind-of rush it, and I hadn't thought it through. I kinda just thought "I will simply copy-and-paste the code for parse_expr, change it slightly, and hope for the best" xD To be honest, most programming is 'hoping for the best'!

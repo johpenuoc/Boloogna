@@ -86,10 +86,10 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     mstack.utype = NODES;
     mstack.UNION.Nodes.nodes = NULL;
     mstack.UNION.Nodes.nodeln = 0;
+    mstack.UNION.Nodes.type = EXPRESSION;
     
     while (true)
         {
-            printf("-> %s\n", token.stor);
             if (token.type == RPAREN || token.type == SCOLON || token.type == COMMA) 
                 {                   
                     NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
@@ -136,6 +136,7 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     mmstack.utype = NODES;
                     mmstack.UNION.Nodes.nodes = NULL;
                     mmstack.UNION.Nodes.nodeln = 0;
+                    mmstack.UNION.Nodes.type = ASSIGNMENT;
                     
                     // fetch the previous token from memory
                     NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
@@ -227,6 +228,7 @@ NodeMaster parse_assignment(Token *tokens, int *token_cnt, NodeMaster *mem, size
     mstack.utype = NODES;
     mstack.UNION.Nodes.nodes = NULL;
     mstack.UNION.Nodes.nodeln = 0;
+    mstack.UNION.Nodes.type = ASSIGNMENT;
     
     // assign the first value (the terminal index) to the assignment token [EQUAL]
     NodeMaster assig;
@@ -270,6 +272,7 @@ NodeMaster parse_func(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     mstack.utype = NODES;
     mstack.UNION.Nodes.nodes = NULL;
     mstack.UNION.Nodes.nodeln = 0;
+    mstack.UNION.Nodes.type = FUNCTION;
       
     // get the function-name identifier
     NodeMaster func_name;
@@ -286,6 +289,7 @@ NodeMaster parse_func(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     args.utype = NODES;
     args.UNION.Nodes.nodes = NULL;
     args.UNION.Nodes.nodeln = 0;
+    args.UNION.Nodes.type = ARGUMENTS;
     
     *token_cnt += 2;
     while (true)
@@ -329,6 +333,7 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
     mstack.utype = NODES;
     mstack.UNION.Nodes.nodes = NULL;
     mstack.UNION.Nodes.nodeln = 0;
+    mstack.UNION.Nodes.type = ID_LINKER;
     
     while (true)
         {
@@ -359,6 +364,7 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     mmstack.utype = NODES;
                     mmstack.UNION.Nodes.nodes = NULL;
                     mmstack.UNION.Nodes.nodeln = 0;
+                    mmstack.UNION.Nodes.type = FRACTIONAL;
                     
                     // fetch the previous token from memory
                     NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
@@ -408,12 +414,6 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     
                     // update the memory
                     umem(mem, mmstack, memsz);
-                    
-                    // update mstack with mmstack       
-                    /*mstacksz += sizeof(mmstack);
-                    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-                    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
-                    mstack.UNION.Nodes.nodeln++;*/
                 }
             else
                 {
@@ -436,6 +436,7 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
     mstack.utype = NODES;
     mstack.UNION.Nodes.nodes = NULL;
     mstack.UNION.Nodes.nodeln = 0;
+    mstack.UNION.Nodes.type = SCOPE;
     
     Token token = tokens[*token_cnt];
     Token next_token = tokens[(*token_cnt) + 1];
@@ -528,7 +529,6 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
         
         //amem(mem, memsz, tokens, token_cnt);
         (*token_cnt)++;
-        printf("next token %s\n", tokens[(*token_cnt) + 1].stor);
         
         token = tokens[*token_cnt];
         next_token = tokens[(*token_cnt) + 1];

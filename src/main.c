@@ -20,7 +20,13 @@ const char *type_names[] = {
     "EQUIVALENT", "GTHAN_OR_EQUAL_TO", "LTHAN_OR_EQUAL_TO",
     "NOT_EQUAL_TO",
     
-    "IDENTIFIER", "COMMENT", "PROGRAM", "MEMORY"
+    "IDENTIFIER", "COMMENT"
+};
+
+const char *stack_type_names[] = {
+    "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
+    "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
+    "SCOPE"
 };
 
 const char *utype_names[] = {
@@ -37,7 +43,7 @@ void printn(NodeMaster *stack, int *depth, char *s)
         }
     else
         {
-            printf("%d _NODES_\n", stack->UNION.Nodes.nodeln);
+            printf("[%9s]\n", stack_type_names[stack->UNION.Nodes.type]);//, stack->UNION.Nodes.nodeln);
             (*depth)++;
             //printf("[");
             for (int i = 0; i < stack->UNION.Nodes.nodeln; ++i)

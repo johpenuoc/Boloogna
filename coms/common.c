@@ -41,7 +41,16 @@ enum _TYPE_
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
     LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
     
-    IDENTIFIER, COMMENT, PROGRAM, MEMORY
+    IDENTIFIER, COMMENT
+};
+
+// these are _TYPE_s which are not found in code but are found after
+// stack generation
+enum _STACK_TYPE_
+{
+    PROGRAM, MEMORY, EXPRESSION, ASSIGNMENT, 
+    FUNCTION, ARGUMENTS, ID_LINKER, FRACTIONAL,
+    SCOPE
 };
 
 enum _DATATYPE_
@@ -85,7 +94,7 @@ typedef struct TAG
         
         struct
         {
-            enum _TYPE_ type;
+            enum _STACK_TYPE_ type;
             struct TAG *nodes;
             int nodeln;
         } Nodes;

@@ -285,13 +285,20 @@ NodeMaster parse_func(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     args.UNION.Nodes.nodeln = 0;
     args.UNION.Nodes.type = ARGUMENTS;
     
-    *token_cnt += 2;
+    *token_cnt += 3;
+    bool update = false;
     while (true)
         {       
             token = tokens[*token_cnt];
             
             if (tokens[(*token_cnt) - 1].type == RPAREN) break;
     
+            if (!update)
+                {
+                    amem(mem, memsz, tokens, token_cnt);
+                    update = true;
+                    (*token_cnt)--;
+                }
             NodeMaster arg = parse_expr(tokens, token_cnt, mem, memsz);
             umem(mem, arg, memsz);
             

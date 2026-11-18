@@ -533,11 +533,14 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
             switch (TOKEN_TYPE)
             {
                 case RBRACE:
-                    NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
+                    // if this is un-commented, it will always have TYPE: [RPAREN]
+                    // at the end of the mstack.
+                    
+                    /*NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
                     mstacksz += sizeof(mmstack);
                     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
                     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
-                    mstack.UNION.Nodes.nodeln++;
+                    mstack.UNION.Nodes.nodeln++;*/
                     
                     return mstack;
                 case IDENTIFIER:  
@@ -698,7 +701,6 @@ NodeMaster stack(List *tokens)
                         }
                     break;
                 case IF:
-                    printf("%s\n", _tokens[token_cnt].stor);
                     NodeMaster __mstack = parse_if(_tokens, ptoken_cnt, &mem, &memsz);
                     
                     // append it to the stack       

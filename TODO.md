@@ -119,4 +119,6 @@ I started coding maybe about an hour-ish ago. That was right after a test. I def
 It doesn't work.
 
 ### 11:01
-It works. 
+It works.
+
+Perphaps my next course of action is to impliment else statements? Shouldn't be too hard. All that is is checking for an option ELSE. If it exists, grab it, then save the scope afterwards. If it doesn't exist, exit. There is also the possibility that an else may contain an if afterwards, so if the next token is LBRACE, grab scope. If it is IF, grab another if statement. However, I'm not entirely sure on the best way to order these within the stack. I'll let the program decide and go about its own logic. Then I'll inspect it. If its easy enough to work with once the stack generation is completed, I'll simply leave it. It's not always worth engineering something that's good enough, in my opinion. 

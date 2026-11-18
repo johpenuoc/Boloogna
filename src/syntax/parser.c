@@ -67,7 +67,6 @@ void umem(NodeMaster *mem, NodeMaster x, size_t *memsz)
     *memsz += sizeof(x);
     mem->UNION.Nodes.nodes = realloc(mem->UNION.Nodes.nodes, *memsz);
     mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln] = x;
-    //printf("added type %s with stor %s into memory at index %d\n", _utypes[x.utype], x.UNION.Node.stor, mem->UNION.Nodes.nodeln);
     mem->UNION.Nodes.nodeln++;
 }
 
@@ -97,7 +96,6 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     
     while (true)
         {
-            printf("> %s\n", tokens[*token_cnt].stor);
             if (token.type == RPAREN || token.type == SCOLON || token.type == COMMA || token.type == LBRACE)// || token.type == AND || token.type == OR) 
                 {                   
                     NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
@@ -220,9 +218,7 @@ NodeMaster _parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size
     
     while (true)
         {   
-            printf("type: %s\n", _type_names[tokens[*token_cnt].type]);
             NodeMaster expr = parse_expr(tokens, token_cnt, mem, memsz);
-            debugp("post");
             
             condsz += sizeof(expr);
             cond.UNION.Nodes.nodes = realloc(cond.UNION.Nodes.nodes, condsz);
@@ -230,27 +226,8 @@ NodeMaster _parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size
             cond.UNION.Nodes.nodeln++;
             
             (*token_cnt)--;
-            printf("uniq: %s\n", _type_names[tokens[*token_cnt].type]);
             
             const enum _TYPE_ TT = tokens[*token_cnt].type;
-            /*if (tokens[*token_cnt].type == EQUIVALENT)
-                {
-                    NodeMaster equivn;
-                    equivn.utype = NODE;
-                    equivn.UNION.Node.type = tokens[*token_cnt].type;
-                    _strcpy(&equivn, tokens[*token_cnt].stor);
-                    
-                    condsz += sizeof(equivn);
-                    cond.UNION.Nodes.nodes = realloc(cond.UNION.Nodes.nodes, condsz);
-                    cond.UNION.Nodes.nodes[cond.UNION.Nodes.nodeln] = equivn;
-                    cond.UNION.Nodes.nodeln++;
-                    
-                    (*token_cnt)++;
-                }
-            else// if (tokens[*token_cnt].type == LBRACE)
-                {
-                    return cond;
-                }*/
             if (TT == SCOLON || TT == LBRACE)
                 {
                     return cond;
@@ -407,7 +384,6 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
                     
                     // fetch the previous token from memory
                     NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
-                    //printf("prev token: %s\n", prev_token.UNION.Node.stor);
                     
                     // assign the first value (the terminal index) to the assignment token [ DECIMAL ]      
                     NodeMaster term;
@@ -595,10 +571,7 @@ NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *mems
     conds.UNION.Nodes.nodes = NULL;
     conds.UNION.Nodes.nodeln = 0;
     
-    //(*token_cnt)++;
-    printf("1HERE: %s\n", tokens[*token_cnt].stor);
     NodeMaster cond = _parse_condition(tokens, token_cnt, mem, memsz);
-    printf("HERE: %s\n", tokens[*token_cnt].stor);
     
     // append cond into mstack
     mstacksz += sizeof(cond);

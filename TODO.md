@@ -130,3 +130,8 @@ It works similarly to C: if cond scope, else if cond scop, else scope.
 
 ### 11:33
 Got a phone in the mail, sent by my lovely mom! Gonna go collect it!
+
+### 14:25
+The phone is great! It's a Pixel 10. I also had a chicken wrap, onion rings and chips. Yummers.
+
+Anyways, I believe the next development has to do with the parse_condition. So far, it can read simple conditional statements like 2 * 3 == a, or b * a + (4 - 0.5) == c * 0.5, but currently there is no AND or OR or NOT in operation. So conditional statements are quite limited right neow. I think I'm going to implement that.

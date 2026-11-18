@@ -26,7 +26,7 @@ const char *type_names[] = {
 const char *stack_type_names[] = {
     "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
     "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
-    "SCOPE", "STATEMENT", "CONDITION"
+    "SCOPE", "STATEMENT", "CONDITION", "IF"
 };
 
 const char *utype_names[] = {
@@ -38,12 +38,22 @@ void printn(NodeMaster *stack, int *depth, char *s)
     for (int j = 0; j < *depth; ++j) printf("\t");
     if (stack->utype == NODE)
         {
-            printf("TYPE: [%11s] \t STOR: [%9s]\n", type_names[stack->UNION.Node.type], stack->UNION.Node.stor);
+            printf("\033[34mNODE:\033[0m \033[32m[%s]\033[0m", type_names[stack->UNION.Node.type]);
+            int tn_len = 14 - strlen(type_names[stack->UNION.Node.type]);
+            for (int h = 0; h < tn_len - 1; ++h) printf("-");
+            printf(">");
+            
+            printf("[");
+            printf("\033[34m%s\033[0m", stack->UNION.Node.stor);
+            printf("]\n");
             //printf("[%s]", stack->UNION.Node.stor);
         }
     else
         {
-            printf("[%9s]\n", stack_type_names[stack->UNION.Nodes.type]);//, stack->UNION.Nodes.nodeln);
+            printf("\033[31mSTACK: \033[0m");
+            printf("\033[31m[\033[0m");
+            printf("%s", stack_type_names[stack->UNION.Nodes.type]);//, stack->UNION.Nodes.nodeln);
+            printf("\033[31m]\033[0m\n");
             (*depth)++;
             //printf("[");
             for (int i = 0; i < stack->UNION.Nodes.nodeln; ++i)

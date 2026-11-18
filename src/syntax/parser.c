@@ -31,6 +31,12 @@ const char *_type_names[] = {
 
 };
 
+const char *_stack_type_names[] = {
+    "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
+    "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
+    "SCOPE", "STATEMENT", "CONDITION", "IF"
+};
+
 const char *_utypes[] = {
     "NODE", "NODES"
 };
@@ -469,7 +475,7 @@ NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *mems
     mstack.utype = NODES;
     mstack.UNION.Nodes.nodes = NULL;
     mstack.UNION.Nodes.nodeln = 0;
-    mstack.UNION.Nodes.type = IF;
+    mstack.UNION.Nodes.type = _IF;
     
     // grab first token
     // which should be the [IF] token, btw
@@ -511,6 +517,11 @@ NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *mems
 // anything that's contained in '{}'
 NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
 {
+    // =================================================
+    // THIS FUNCTION EXPECTS TO BE ON [LBRACE] FIRST 
+    // TOKEN AFTER '{' [LBRACE] FIRST
+    // =================================================
+    
     // mstack --> ministack, like a branch in a tree 
     size_t mstacksz = 0;
     NodeMaster mstack;
@@ -702,6 +713,7 @@ NodeMaster stack(List *tokens)
                     break;
                 case IF:
                     NodeMaster __mstack = parse_if(_tokens, ptoken_cnt, &mem, &memsz);
+                    printf("here: %s\n", _stack_type_names[__mstack.UNION.Nodes.type]);
                     
                     // append it to the stack       
                     stacksz += sizeof(__mstack);
@@ -715,7 +727,6 @@ NodeMaster stack(List *tokens)
                     // parse_expr
                     break;
                 case LBRACE:
-                    token_cnt++;
                     NodeMaster _mstack = parse_scope(_tokens, ptoken_cnt, &mem, &memsz);
                     
                     // append it to the stack       

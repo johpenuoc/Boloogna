@@ -26,7 +26,7 @@ const char *type_names[] = {
 const char *stack_type_names[] = {
     "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
     "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
-    "SCOPE", "STATEMENT", "CONDITION", "IF"
+    "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE"
 };
 
 const char *utype_names[] = {

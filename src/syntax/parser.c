@@ -479,7 +479,6 @@ NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *mems
     
     // grab first token
     // which should be the [IF] token, btw
-    size_t if_tokensz = 0;
     NodeMaster if_token;
     if_token.utype = NODE;
     if_token.UNION.Node.type = tokens[*token_cnt].type;
@@ -510,16 +509,69 @@ NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *mems
     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = scope;
     mstack.UNION.Nodes.nodeln++;
     
-    return mstack;
+    // =============== ELSE ===============
+    // this is an optional token.
+    // we will check for an else, then a possible IF afterwards.
+    // if IF exists, call a parse_if at that token.
+    // if a scope exists after ELSE, call parse_scope
     
+    // checking if an ELSE exists at all
+    (*token_cnt)++;
+    if (!(tokens[*token_cnt].type == ELSE)) 
+        {
+          (*token_cnt)--;
+          return mstack;  
+        }
+    
+    size_t else_tokensz = 0;
+    NodeMaster else_token;
+    else_token.utype = NODES;
+    else_token.UNION.Nodes.type = _ELSE;
+    else_token.UNION.Nodes.nodes = NULL;
+    else_token.UNION.Nodes.nodeln = 0;
+
+    // check whether there is an IF after the ELSE
+    (*token_cnt)++;
+    if (tokens[*token_cnt].type == IF)
+        {
+            NodeMaster _if_token = parse_if(tokens, token_cnt, mem, memsz);
+            
+            else_tokensz += sizeof(_if_token);
+            else_token.UNION.Nodes.nodes = realloc(else_token.UNION.Nodes.nodes, else_tokensz);
+            else_token.UNION.Nodes.nodes[else_token.UNION.Nodes.nodeln] = _if_token;
+            else_token.UNION.Nodes.nodeln++;
+        }
+    else
+        {
+            printf("curr: %s\n", tokens[*token_cnt].stor);
+            debugp("please get to here");
+            // parse scope
+            (*token_cnt)++;
+            NodeMaster _scope = parse_scope(tokens, token_cnt, mem, memsz);
+            
+            debugp("and here?");
+            
+            // append scope into mstack
+            else_tokensz += sizeof(_scope);
+            else_token.UNION.Nodes.nodes = realloc(else_token.UNION.Nodes.nodes, else_tokensz);
+            else_token.UNION.Nodes.nodes[else_token.UNION.Nodes.nodeln] = _scope;
+            else_token.UNION.Nodes.nodeln++;
+        }
+    
+    mstacksz += sizeof(else_token);
+    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = else_token;
+    mstack.UNION.Nodes.nodeln++;
+    
+    return mstack;
 }
 
 // anything that's contained in '{}'
 NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
 {
     // =================================================
-    // THIS FUNCTION EXPECTS TO BE ON [LBRACE] FIRST 
-    // TOKEN AFTER '{' [LBRACE] FIRST
+    // THIS FUNCTION EXPECTS TO BE ON THE TOKEN AFTER
+    // [LBRACE] (A.K.A., THE FIRST TOKEN IN A SCOPE)
     // =================================================
     
     // mstack --> ministack, like a branch in a tree 
@@ -532,6 +584,8 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
     
     Token token = tokens[*token_cnt];
     Token next_token = tokens[(*token_cnt) + 1];
+    
+    printf(">>>>>> %s\n", token.stor);
     
     while (true)
         {   
@@ -606,13 +660,15 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
                     // parse_expr
                     break;
                 case LBRACE:
-                    NodeMaster _mmstack = parse_scope(tokens, token_cnt, mem, memsz);
-                    
-                    // append it to the stack       
-                    mstacksz += sizeof(_mmstack);
-                    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-                    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln - 1] = _mmstack;
-                    mstack.UNION.Nodes.nodeln++;
+                    {
+                        NodeMaster mmstack = parse_scope(tokens, token_cnt, mem, memsz);
+                        
+                        // append it to the stack       
+                        mstacksz += sizeof(mmstack);
+                        mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln - 1] = mmstack;
+                        mstack.UNION.Nodes.nodeln++;
+                    }
                     break;
                 case IF:
                     {

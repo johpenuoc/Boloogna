@@ -127,3 +127,6 @@ Perphaps my next course of action is to impliment else statements? Shouldn't be 
 I have fully implimented if and else and else-if statements. You can embedd them, or do whatever.
 
 It works similarly to C: if cond scope, else if cond scop, else scope.
+
+### 11:33
+Got a phone in the mail, sent by my lovely mom! Gonna go collect it!

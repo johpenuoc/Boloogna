@@ -35,7 +35,7 @@ const char *_stack_type_names[] = {
     "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
     "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
     "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
-    "AND", "OR"
+    "AND", "OR", "NOT", "GTOET", "LTOET"
 };
 
 const char *_utypes[] = {
@@ -134,7 +134,19 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     
                     (*token_cnt)--;
                 }
-            else if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV || token.type == AND || token.type == OR || token.type == EQUIVALENT)
+            else if (token.type == NOT)
+                {
+                    // this is a mini-mini stack --> [OP][x][y]                
+                    size_t mmstacksz = 0;
+                    NodeMaster mmstack;
+                    mmstack.utype = NODES;
+                    mmstack.UNION.Nodes.nodes = NULL;
+                    mmstack.UNION.Nodes.nodeln = 0;
+                    mmstack.UNION.Nodes.type = ASSIGNMENT;
+                    
+                    // ill carry this one on tomorrow.
+                }
+            else if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV || token.type == AND || token.type == OR || token.type == EQUIVALENT || token.type == GTHAN_OR_EQUAL_TO || token.type == LTHAN_OR_EQUAL_TO)
                 {
                     // this is a mini-mini stack --> [OP][x][y]                
                     size_t mmstacksz = 0;
@@ -436,103 +448,6 @@ NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
             token = tokens[*token_cnt];
         }
     
-}
-
-NodeMaster parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
-{
-    // =================================================
-    // THIS FUNCTION EXPECTS TO BE ON [the first token 
-    // of an expression, i.e. 3 * x == y, '3' would be 
-    // what it expects to be on FIRST]
-    // =================================================
-    // initialize mstack
-    size_t mstacksz = 0;
-    NodeMaster mstack;
-    mstack.utype = NODES;
-    mstack.UNION.Nodes.nodes = NULL;
-    mstack.UNION.Nodes.nodeln = 0;
-    mstack.UNION.Nodes.type = CONDITION;
-    
-    // grab left hand side of condition
-    NodeMaster left_expr = parse_expr(tokens, token_cnt, mem, memsz);
-    
-    // update the memory with left_expr
-    umem(mem, left_expr, memsz);
-    
-    // i believe parse_expr puts us out one token ahead, so that's '==' i THINK
-    (*token_cnt)--;
-    NodeMaster equivn;
-    equivn.utype = NODE;
-    equivn.UNION.Node.type = tokens[*token_cnt].type;
-    _strcpy(&equivn, tokens[*token_cnt].stor);
-    
-    bool skip_right = false;
-    if (tokens[*token_cnt].type == EQUIVALENT) skip_right = true;
-    
-    // update mstack with equivn
-    mstacksz += sizeof(equivn);
-    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = equivn;
-    mstack.UNION.Nodes.nodeln++;
-    
-    // update mstack with left_expr
-    mstacksz += sizeof(left_expr);
-    mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-    mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = left_expr;
-    mstack.UNION.Nodes.nodeln++;
-    
-    if (!skip_right)
-        {        
-            // grab right hand side of condition
-            (*token_cnt)++;
-            NodeMaster right_expr = parse_expr(tokens, token_cnt, mem, memsz);
-            
-            // update the memory with right_expr
-            umem(mem, right_expr, memsz);
-            
-            // update mstack with right_expr
-            mstacksz += sizeof(right_expr);
-            mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-            mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = right_expr;
-            mstack.UNION.Nodes.nodeln++;
-        }
-    
-    // ===================================================
-    // check for any conditional that are set afterwards
-    // like with an AND or OR or NOT, followed by another
-    // conditional statement
-    // ===================================================
-    
-    (*token_cnt)--;
-    const enum _TYPE_ TT = tokens[*token_cnt].type;
-    if (TT == AND || TT == OR)
-        {
-            size_t cltsz = 0;
-            NodeMaster cond_linking_type;
-            cond_linking_type.utype = NODES;
-            cond_linking_type.UNION.Nodes.type = _type_to_stack_type(TT);
-            cond_linking_type.UNION.Nodes.nodes = NULL;
-            cond_linking_type.UNION.Nodes.nodeln = 0;
-            
-            (*token_cnt)++;
-            NodeMaster _cond = parse_condition(tokens, token_cnt, mem, memsz);
-            
-            cltsz += sizeof(_cond);
-            cond_linking_type.UNION.Nodes.nodes = realloc(cond_linking_type.UNION.Nodes.nodes, cltsz);
-            cond_linking_type.UNION.Nodes.nodes[cond_linking_type.UNION.Nodes.nodeln] = _cond;
-            cond_linking_type.UNION.Nodes.nodeln++;
-            
-            mstacksz += sizeof(cond_linking_type);
-            mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-            mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = cond_linking_type;
-            mstack.UNION.Nodes.nodeln++;
-        }
-    else
-        {
-            (*token_cnt)++;
-        }
-    
-    return mstack;
 }
 
 NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)

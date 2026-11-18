@@ -168,4 +168,10 @@ I just need to get the '==' operator working.
 I got it fully working! Well, I'll test it more thoroughly after I've gotten a drink. However, so far, it appears to be functional.
 
 ### 20:31
-I've tested it and it seems to work! 
+I've tested it and it seems to work!
+
+### 20:41
+Next-up for development: nots, gthan, lthan
+
+### 20:58
+I got the latter two working. NOT... not so far xD. Anyawys, off to bed.

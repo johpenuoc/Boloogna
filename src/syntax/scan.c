@@ -296,6 +296,9 @@ List tokenize(FILE *file)
     combine_tokens(tokens, token_cnt_ptr, NOT, EQUAL, NOT_EQUAL_TO);
     // i forgot i had this...
     combine_tokens(tokens, token_cnt_ptr, EQUAL, EQUAL, EQUIVALENT);
+    
+    combine_tokens(tokens, token_cnt_ptr, GTHAN, EQUAL, GTHAN_OR_EQUAL_TO);
+    combine_tokens(tokens, token_cnt_ptr, LTHAN, EQUAL, LTHAN_OR_EQUAL_TO);
         
     
     return (List){ .element = tokens, .length = token_cnt};

@@ -135,3 +135,15 @@ Got a phone in the mail, sent by my lovely mom! Gonna go collect it!
 The phone is great! It's a Pixel 10. I also had a chicken wrap, onion rings and chips. Yummers.
 
 Anyways, I believe the next development has to do with the parse_condition. So far, it can read simple conditional statements like 2 * 3 == a, or b * a + (4 - 0.5) == c * 0.5, but currently there is no AND or OR or NOT in operation. So conditional statements are quite limited right neow. I think I'm going to implement that.
+
+### 16:32
+Haven't implimented it properly (it only works with single if statements). I've somehow broken it all and EVEN WHEN I REVERT BACK it still doesn't work.
+
+### 16:47
+I can finally be released from my prison; it works.
+
+Apparently, SOMEWHOW, a little '-1' crept in. I'm not entirely sure how, but I knew that there were no logic bugs. Thus, this code was giving me a headache. Nonetheless, it now works.
+
+AND and OR's can be used in conditional statements in if / if-else statements. 
+
+It works!

@@ -48,7 +48,8 @@ enum _STACK_TYPE_
 {
     PROGRAM, MEMORY, EXPRESSION, ASSIGNMENT, 
     FUNCTION, ARGUMENTS, ID_LINKER, FRACTIONAL,
-    SCOPE, STATEMENT, CONDITION, _IF, _ELSE
+    SCOPE, STATEMENT, CONDITION, _IF, _ELSE, 
+    _AND, _OR
 };
 
 enum _DATATYPE_
@@ -96,6 +97,7 @@ typedef struct TAG
     
 } NodeMaster;
 
+enum _TYPE_ _type_to_stack_type(enum _TYPE_ type);
 void debugp(char *s);
 bool is_in(char *string, char c, int string_length);
 bool only_numbers(char *string, int string_length);

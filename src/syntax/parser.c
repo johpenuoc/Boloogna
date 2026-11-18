@@ -34,7 +34,8 @@ const char *_type_names[] = {
 const char *_stack_type_names[] = {
     "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
     "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
-    "SCOPE", "STATEMENT", "CONDITION", "IF"
+    "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
+    "AND", "OR"
 };
 
 const char *_utypes[] = {
@@ -96,7 +97,7 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     
     while (true)
         {
-            if (token.type == RPAREN || token.type == SCOLON || token.type == COMMA || token.type == EQUIVALENT || token.type == LBRACE) 
+            if (token.type == RPAREN || token.type == SCOLON || token.type == COMMA || token.type == EQUIVALENT || token.type == LBRACE || token.type == AND || token.type == OR) 
                 {                   
                     NodeMaster mmstack = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
                     mstacksz += sizeof(mmstack);
@@ -416,7 +417,6 @@ NodeMaster parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size_
     // =================================================
     // THIS FUNCTION EXPECTS TO BE ON [(the first token of an expression, i.e. 3 * x == y, '(' would be what it expects to be on] FIRST
     // =================================================
-    
     // initialize mstack
     size_t mstacksz = 0;
     NodeMaster mstack;
@@ -426,7 +426,6 @@ NodeMaster parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size_
     mstack.UNION.Nodes.type = CONDITION;
     
     // grab left hand side of condition
-    printf("before %s\n", tokens[*token_cnt].stor);
     NodeMaster left_expr = parse_expr(tokens, token_cnt, mem, memsz);
     
     // update the memory with left_expr
@@ -434,7 +433,6 @@ NodeMaster parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size_
     
     // i believe parse_expr puts us out one token ahead, so that's '==' i THINK
     (*token_cnt)--;
-    printf("omds %s\n", tokens[*token_cnt].stor);
     NodeMaster equivn;
     equivn.utype = NODE;
     equivn.UNION.Node.type = tokens[*token_cnt].type;
@@ -454,9 +452,7 @@ NodeMaster parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size_
     
     // grab right hand side of condition
     (*token_cnt)++;
-    printf("curr: %s\n", tokens[*token_cnt].stor);
     NodeMaster right_expr = parse_expr(tokens, token_cnt, mem, memsz);
-    printf("curr: %s\n", tokens[*token_cnt].stor);
     
     // update the memory with right_expr
     umem(mem, right_expr, memsz);
@@ -466,6 +462,41 @@ NodeMaster parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size_
     mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = right_expr;
     mstack.UNION.Nodes.nodeln++;
+    
+    // ===================================================
+    // check for any conditional that are set afterwards
+    // like with an AND or OR or NOT, followed by another
+    // conditional statement
+    // ===================================================
+    
+    (*token_cnt)--;
+    const enum _TYPE_ TT = tokens[*token_cnt].type;
+    if (TT == AND || TT == OR)
+        {
+            size_t cltsz = 0;
+            NodeMaster cond_linking_type;
+            cond_linking_type.utype = NODES;
+            cond_linking_type.UNION.Nodes.type = _type_to_stack_type(TT);
+            cond_linking_type.UNION.Nodes.nodes = NULL;
+            cond_linking_type.UNION.Nodes.nodeln = 0;
+            
+            (*token_cnt)++;
+            NodeMaster _cond = parse_condition(tokens, token_cnt, mem, memsz);
+            
+            cltsz += sizeof(_cond);
+            cond_linking_type.UNION.Nodes.nodes = realloc(cond_linking_type.UNION.Nodes.nodes, cltsz);
+            cond_linking_type.UNION.Nodes.nodes[cond_linking_type.UNION.Nodes.nodeln] = _cond;
+            cond_linking_type.UNION.Nodes.nodeln++;
+            
+            mstacksz += sizeof(cond_linking_type);
+            mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+            mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = cond_linking_type;
+            mstack.UNION.Nodes.nodeln++;
+        }
+    else
+        {
+            (*token_cnt)++;
+        }
     
     return mstack;
 }
@@ -550,13 +581,9 @@ NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *mems
         }
     else
         {
-            printf("curr: %s\n", tokens[*token_cnt].stor);
-            debugp("please get to here");
             // parse scope
             (*token_cnt)++;
             NodeMaster _scope = parse_scope(tokens, token_cnt, mem, memsz);
-            
-            debugp("and here?");
             
             // append scope into mstack
             else_tokensz += sizeof(_scope);
@@ -592,8 +619,6 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
     Token token = tokens[*token_cnt];
     Token next_token = tokens[(*token_cnt) + 1];
     
-    printf(">>>>>> %s\n", token.stor);
-    
     while (true)
         {   
             // checking if any are terminal
@@ -601,6 +626,8 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
             const enum _TYPE_ NEXT_TOKEN_TYPE = next_token.type;
             
             amem(mem, memsz, tokens, token_cnt);
+            
+            printf("scope token: %s\n", token.stor);
             
             switch (TOKEN_TYPE)
             {
@@ -629,6 +656,7 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
                         }
                     else if (NEXT_TOKEN_TYPE == EQUAL)
                         {
+                            printf("prev %s\n", tokens[*token_cnt].stor);
                             NodeMaster mmstack = parse_assignment(tokens, token_cnt, mem, memsz);
                             
                             // append it to the stack       
@@ -637,10 +665,11 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
                             mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
                             mstack.UNION.Nodes.nodeln++;
                             
+                            printf("post %s\n", tokens[*token_cnt].stor);
+                            
                             (*token_cnt)--;
 
                             break;
-                            
                         }
                     else if (NEXT_TOKEN_TYPE == DECIMAL)
                         {
@@ -659,7 +688,7 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
                             // append it to the stack       
                             mstacksz += sizeof(mmstack);
                             mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-                            mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln - 1] = mmstack;
+                            mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
                             mstack.UNION.Nodes.nodeln++;
                         }
                     break;
@@ -668,12 +697,13 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
                     break;
                 case LBRACE:
                     {
+                        (*token_cnt)++;
                         NodeMaster mmstack = parse_scope(tokens, token_cnt, mem, memsz);
                         
                         // append it to the stack       
                         mstacksz += sizeof(mmstack);
                         mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln - 1] = mmstack;
+                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
                         mstack.UNION.Nodes.nodeln++;
                     }
                     break;
@@ -684,8 +714,11 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
                         // append it to the stack       
                         mstacksz += sizeof(mmstack);
                         mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
-                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln - 1] = mmstack;
+                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
                         mstack.UNION.Nodes.nodeln++;
+                        
+                        //(*token_cnt)--;
+                        printf("ttttoken: %s\n", tokens[*token_cnt].stor);
                     }
                     break;
                 case EQUAL:
@@ -786,7 +819,6 @@ NodeMaster stack(List *tokens)
                     break;
                 case IF:
                     NodeMaster __mstack = parse_if(_tokens, ptoken_cnt, &mem, &memsz);
-                    printf("here: %s\n", _stack_type_names[__mstack.UNION.Nodes.type]);
                     
                     // append it to the stack       
                     stacksz += sizeof(__mstack);

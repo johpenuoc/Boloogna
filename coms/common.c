@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"!=+-/*^";
+char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"!=+-/*^&|";
 char *TERM = "(){},.:;+-*/=^><!?";
 char *MODE = "\"#";
 
@@ -50,7 +50,8 @@ enum _STACK_TYPE_
 {
     PROGRAM, MEMORY, EXPRESSION, ASSIGNMENT, 
     FUNCTION, ARGUMENTS, ID_LINKER, FRACTIONAL,
-    SCOPE, STATEMENT, CONDITION, _IF, _ELSE
+    SCOPE, STATEMENT, CONDITION, _IF, _ELSE, 
+    _AND, _OR
 };
 
 enum _DATATYPE_
@@ -106,6 +107,17 @@ typedef struct TAG
 // ==============================
 // ==============================
 
+enum _TYPE_ _type_to_stack_type(enum _TYPE_ type)
+{
+    if (type == AND) return _AND;
+    else if (type == OR) return _OR;
+    else
+        {
+            printf("Doesn't exist\n");
+            return 1;
+        }
+}
+
 void debugp(char *s)
 {
     printf("DEBUG [%s]\n", s);
@@ -126,6 +138,8 @@ bool is_in(char *string, char c, int string_length)
 
 bool only_numbers(char *string, int string_length)
 {
+    // forgot why i even put this here...
+    // i should comment wayyyy more often
     if (string[string_length - 1] == '.') return false;
     
     for (int i = 0; i < string_length; ++i)

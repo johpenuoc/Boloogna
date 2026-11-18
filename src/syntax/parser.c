@@ -614,7 +614,17 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
                     mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln - 1] = _mmstack;
                     mstack.UNION.Nodes.nodeln++;
                     break;
-                    
+                case IF:
+                    {
+                        NodeMaster mmstack = parse_if(tokens, token_cnt, mem, memsz);
+                        
+                        // append it to the stack       
+                        mstacksz += sizeof(mmstack);
+                        mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln - 1] = mmstack;
+                        mstack.UNION.Nodes.nodeln++;
+                    }
+                    break;
                 case EQUAL:
                     // prase_expr
                     break;

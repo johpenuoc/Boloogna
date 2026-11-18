@@ -110,3 +110,13 @@ Apparently I've found another problem with scan.c. Basically, IT DOESN'T RECOGNI
 
 ### 21:29 
 I have to get to bed. Anyways, I need to fix that RPAREN thing tomorrow, after my test...
+
+## 18/11/26
+### 10:56
+I started coding maybe about an hour-ish ago. That was right after a test. I definitely aced it. Although, I was very tired and sleep deprived, so I messed up a stupid probability question that's easy as anything. Oh well. Nonetheless, I've fixed both of the previous problems. [IF] statements work properly too now, I think. I still haven't properly tested them, like if statements within if statements. Actually I'm going to do that neow.
+
+### 10:58
+It doesn't work.
+
+### 11:01
+It works. 

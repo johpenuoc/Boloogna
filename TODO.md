@@ -165,4 +165,7 @@ Pretty cool!
 I just need to get the '==' operator working.
 
 ### 20:22
-I got it fully working! Well, I'll test it more thoroughly after I've gotten a drink. However, so far, it appears to be functional. 
+I got it fully working! Well, I'll test it more thoroughly after I've gotten a drink. However, so far, it appears to be functional.
+
+### 20:31
+I've tested it and it seems to work! 

@@ -9,6 +9,7 @@ void umem(NodeMaster *mem, NodeMaster x, size_t *memsz);
 void amem(NodeMaster *mem, size_t *memsz, Token *tokens, int *token_cnt);
 
 NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
+NodeMaster _parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_assignment(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_func(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);

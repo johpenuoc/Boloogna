@@ -147,3 +147,19 @@ Apparently, SOMEWHOW, a little '-1' crept in. I'm not entirely sure how, but I k
 AND and OR's can be used in conditional statements in if / if-else statements. 
 
 It works!
+
+### 18:37
+I'm back from a food and walk break. I'm feeling pretty good about this.
+
+Basically, what caused the error last time was the smallest of things.
+
+When writing an mmstack to mstack, I was unfortunately not writing it to the furthest index, but instead I was writing it to the second-to-last one. I didn't notice this and I genuinely have no idea how it got in there. But, either way, the code is fully functional now; AND and OR statements work.
+
+Next will be to impliment them with brackets.
+
+### 20:14
+The functions of parse_condition have been absorbed by parse_expr. So now, not only can you have "if (a & b | c) & e {}" or something, but you can also declare variables as "a = (b & c) - 1;". 
+
+Pretty cool!
+
+I just need to get the '==' operator working. 

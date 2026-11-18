@@ -136,7 +136,7 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     
                     (*token_cnt)--;
                 }
-            else if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV || token.type == AND || token.type == OR)
+            else if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV || token.type == AND || token.type == OR || token.type == EQUIVALENT)
                 {
                     // this is a mini-mini stack --> [OP][x][y]                
                     size_t mmstacksz = 0;
@@ -232,7 +232,8 @@ NodeMaster _parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size
             (*token_cnt)--;
             printf("uniq: %s\n", _type_names[tokens[*token_cnt].type]);
             
-            if (tokens[*token_cnt].type == EQUIVALENT)
+            const enum _TYPE_ TT = tokens[*token_cnt].type;
+            /*if (tokens[*token_cnt].type == EQUIVALENT)
                 {
                     NodeMaster equivn;
                     equivn.utype = NODE;
@@ -247,6 +248,10 @@ NodeMaster _parse_condition(Token *tokens, int *token_cnt, NodeMaster *mem, size
                     (*token_cnt)++;
                 }
             else// if (tokens[*token_cnt].type == LBRACE)
+                {
+                    return cond;
+                }*/
+            if (TT == SCOLON || TT == LBRACE)
                 {
                     return cond;
                 }

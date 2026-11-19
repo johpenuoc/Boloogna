@@ -188,3 +188,11 @@ and false to true.
 
 ### 15:16
 I think I've implemented it? I mean, I used the same logic as LPAREN and RPAREN. You just have to surround whatever it is you're inversing with '()'. If it comes accross a NOT, it just checks for LPAREN next and calls another parse_expr function. Seems pretty simple. Hopefully it's robust!
+
+Now I wonder what is next...
+
+Perhaps a while loop? Or for loop? Or do I just still with a more general 'until' loop?
+
+I think I'm going to go with defining functions!
+
+Time to continue development.

@@ -7,33 +7,6 @@
 #include "src/syntax/scan.h"
 #include "src/syntax/parser.h"
 
-const char *type_names[] = {
-    "LPAREN", "RPAREN", "LBRACE", "RBRACE",
-    "COMMA", "DECIMAL", "COLON", "SCOLON", 
-    "ADD", "SUB", "STAR", "DIV", "EQUAL", 
-    "POWER", "GTHAN", "LTHAN",
-    
-    "AND", "OR", "NOT", "GOTO", "UNTIL", "IF", "ELSE",
-    
-    "NUMBER", "STRING", "DEF_FN",
-    
-    "EQUIVALENT", "GTHAN_OR_EQUAL_TO", "LTHAN_OR_EQUAL_TO",
-    "NOT_EQUAL_TO",
-    
-    "IDENTIFIER", "COMMENT"
-};
-
-const char *stack_type_names[] = {
-    "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
-    "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
-    "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
-    "AND", "OR", "NOT", "GTOET", "LTOET", "DEF_FN"
-};
-
-const char *utype_names[] = {
-    "NODE", "NODES"
-};
-
 void printn(NodeMaster *stack, int *depth, char *s)
 {
     for (int j = 0; j < *depth; ++j) printf("\t");

@@ -202,3 +202,16 @@ I've also decided on implementing the 'return' token.
 
 ### 15:55
 It appears that I have implemented the ability to define functions neow. It was quite simple, but many things like this will be. For example, a while loop is checking for a while token, creating a NodeMaster with 'while' as its type, then taking a condition, then a scope, and thats it. The hard part is actually running through the code... But this part is quite easy. Unless you've got to search for a '-1' in 1000 lines of code, that is.
+
+Now I suppose I'll implement the 'until' loop? Why not. Boring but easy and might as well get it done.
+
+### 16:09
+THE PARSE_CONDITION FUNCTION ISN'T WORKING AGAIN.
+
+### 16:10
+Nevermind :)
+
+### 16:23
+Okay, so UNTIL loops have been implemented and defining functions has been too. Didn't take to long, but many things from here-on-out (at the stack level) are merely arranging current functions in different orders.
+
+Gonna go on a walk and grab dinner. The next thing for development will probably be the RETURN token. 

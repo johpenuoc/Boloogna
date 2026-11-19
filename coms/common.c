@@ -51,13 +51,43 @@ enum _STACK_TYPE_
     PROGRAM, MEMORY, EXPRESSION, ASSIGNMENT, 
     FUNCTION_CALL, ARGUMENTS, ID_LINKER, FRACTIONAL,
     SCOPE, STATEMENT, CONDITION, _IF, _ELSE, 
-    _AND, _OR, _NOT, _GTOET, _LTOET, _DEF_FN
+    _AND, _OR, _NOT, _GTOET, _LTOET, _DEF_FN,
+    LOOP
 };
 
 enum _DATATYPE_
 {
     _INT_, _STRING_, _CHAR_, _BOOL_,
     _FLOAT_
+};
+
+const char *type_names[] = {
+    "LPAREN", "RPAREN", "LBRACE", "RBRACE",
+    "COMMA", "DECIMAL", "COLON", "SCOLON", 
+    "ADD", "SUB", "STAR", "DIV", "EQUAL", 
+    "POWER", "GTHAN", "LTHAN",
+    
+    "AND", "OR", "NOT", "GOTO", "UNTIL", "IF", "ELSE",
+    
+    "NUMBER", "STRING", "DEF_FN",
+    
+    "EQUIVALENT", "GTHAN_OR_EQUAL_TO", "LTHAN_OR_EQUAL_TO",
+    "NOT_EQUAL_TO",
+    
+    "IDENTIFIER", "COMMENT", "PROGRAM", "MEMORY"
+
+};
+
+const char *stack_type_names[] = {
+    "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
+    "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
+    "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
+    "AND", "OR", "NOT", "GTOET", "LTOET", "DEF_FN",
+    "ULOOP"
+};
+
+const char *utypes[] = {
+    "NODE", "NODES"
 };
 
 typedef struct Token

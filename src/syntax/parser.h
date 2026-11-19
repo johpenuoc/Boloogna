@@ -15,6 +15,8 @@ NodeMaster parse_func(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
 NodeMaster parse_IDlinker(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_if(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
+NodeMaster parse_dfn(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
+NodeMaster parse_until(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 
 NodeMaster stack(List *tokens);
 

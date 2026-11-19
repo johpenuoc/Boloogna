@@ -7,6 +7,10 @@ extern char *ALPHA;
 extern char *TERM;
 extern char *MODE;
 
+extern char *type_names[];
+extern char *stack_type_names[];
+extern char *utypes[];
+
 enum _UTYPE_
 {
     NODE, NODES
@@ -36,7 +40,7 @@ enum _TYPE_
     
     AND, OR, NOT, GOTO, UNTIL, IF, ELSE,
     
-    NUMBER, STRING, DEF_FN,
+    NUMBER, STRING, DEF_FN, 
     
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
     LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
@@ -50,7 +54,8 @@ enum _STACK_TYPE_
     PROGRAM, MEMORY, EXPRESSION, ASSIGNMENT, 
     FUNCTION, ARGUMENTS, ID_LINKER, FRACTIONAL,
     SCOPE, STATEMENT, CONDITION, _IF, _ELSE, 
-    _AND, _OR, _NOT, _GTOET, _LTOET, _DEF_FN
+    _AND, _OR, _NOT, _GTOET, _LTOET, _DEF_FN,
+    LOOP
 };
 
 enum _DATATYPE_

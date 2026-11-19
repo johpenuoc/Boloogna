@@ -221,6 +221,8 @@ List tokenize(FILE *file)
                     else if (strcmp(curr, ")") == 0) tokens[token_cnt - 1].type = RPAREN;
                     else if (strcmp(curr, "{") == 0) tokens[token_cnt - 1].type = LBRACE;
                     else if (strcmp(curr, "}") == 0) tokens[token_cnt - 1].type = RBRACE;
+                    else if (strcmp(curr, "[") == 0) tokens[token_cnt - 1].type = LBRACKET;
+                    else if (strcmp(curr, "]") == 0) tokens[token_cnt - 1].type = RBRACKET;
                     else if (strcmp(curr, ",") == 0) tokens[token_cnt - 1].type = COMMA;
                     else if (strcmp(curr, ".") == 0) tokens[token_cnt - 1].type = DECIMAL;
                     else if (strcmp(curr, ":") == 0) tokens[token_cnt - 1].type = COLON;
@@ -300,6 +302,12 @@ List tokenize(FILE *file)
     
     combine_tokens(tokens, token_cnt_ptr, GTHAN, EQUAL, GTHAN_OR_EQUAL_TO);
     combine_tokens(tokens, token_cnt_ptr, LTHAN, EQUAL, LTHAN_OR_EQUAL_TO);
+    
+    combine_tokens(tokens, token_cnt_ptr, ADD, EQUAL, ADD_EQ);
+    combine_tokens(tokens, token_cnt_ptr, SUB, EQUAL, SUB_EQ);
+    combine_tokens(tokens, token_cnt_ptr, DIV, EQUAL, DIV_EQ);
+    combine_tokens(tokens, token_cnt_ptr, STAR, EQUAL, STAR_EQ);
+    
         
     
     return (List){ .element = tokens, .length = token_cnt};

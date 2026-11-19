@@ -4,7 +4,7 @@
 #include <string.h>
 
 char *ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"!=+-/*^&|";
-char *TERM = "(){},.:;+-*/=^><!?";
+char *TERM = "(){}[],.:;+-*/=^><!?";
 char *MODE = "\"#";
 
 enum _UTYPE_
@@ -30,9 +30,9 @@ enum _HIGH_PRIORITY_
 enum _TYPE_ 
 {
     LPAREN, RPAREN, LBRACE, RBRACE,
-    COMMA, DECIMAL, COLON, SCOLON, 
-    ADD, SUB, STAR, DIV, EQUAL, 
-    POWER, GTHAN, LTHAN,
+    LBRACKET, RBRACKET, COMMA, DECIMAL, 
+    COLON, SCOLON, ADD, SUB, STAR, DIV, 
+    EQUAL, POWER, GTHAN, LTHAN,
     
     AND, OR, NOT, GOTO, UNTIL, IF, ELSE,
     
@@ -40,6 +40,8 @@ enum _TYPE_
     
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
     LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
+    
+    ADD_EQ, SUB_EQ, STAR_EQ, DIV_EQ,
     
     IDENTIFIER, COMMENT
 };
@@ -52,7 +54,7 @@ enum _STACK_TYPE_
     FUNCTION_CALL, ARGUMENTS, ID_LINKER, FRACTIONAL,
     SCOPE, STATEMENT, CONDITION, _IF, _ELSE, 
     _AND, _OR, _NOT, _GTOET, _LTOET, _DEF_FN,
-    LOOP
+    LOOP, ADDEQ, SUBEQ, STAREQ, DIVEQ, LIST
 };
 
 enum _DATATYPE_
@@ -63,6 +65,7 @@ enum _DATATYPE_
 
 const char *type_names[] = {
     "LPAREN", "RPAREN", "LBRACE", "RBRACE",
+    "LBRACKET", "RBRACKET",
     "COMMA", "DECIMAL", "COLON", "SCOLON", 
     "ADD", "SUB", "STAR", "DIV", "EQUAL", 
     "POWER", "GTHAN", "LTHAN",
@@ -72,7 +75,7 @@ const char *type_names[] = {
     "NUMBER", "STRING", "DEF_FN",
     
     "EQUIVALENT", "GTHAN_OR_EQUAL_TO", "LTHAN_OR_EQUAL_TO",
-    "NOT_EQUAL_TO",
+    "NOT_EQUAL_TO", "ADD_EQ", "SUB_EQ", "STAR_EQ", "DIV_EQ",
     
     "IDENTIFIER", "COMMENT", "PROGRAM", "MEMORY"
 
@@ -83,7 +86,7 @@ const char *stack_type_names[] = {
     "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
     "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
     "AND", "OR", "NOT", "GTOET", "LTOET", "DEF_FN",
-    "ULOOP"
+    "ULOOP", "PLUSEQ", "MINUSEQ", "STAREQ", "DIVEQ"
 };
 
 const char *utypes[] = {

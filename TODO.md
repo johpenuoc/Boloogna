@@ -214,4 +214,20 @@ Nevermind :)
 ### 16:23
 Okay, so UNTIL loops have been implemented and defining functions has been too. Didn't take to long, but many things from here-on-out (at the stack level) are merely arranging current functions in different orders.
 
-Gonna go on a walk and grab dinner. The next thing for development will probably be the RETURN token. 
+Gonna go on a walk and grab dinner. The next thing for development will probably be the RETURN token.
+
+### 20:49
+I've been out and gone for a little while. Even when I've been in the library, I've just sat and done nothing. Had a wave of motivation, of course. Obviously I had the total opposite. I'm barely recovering right now. Anyways, this death of motivation has strangely given me some clarity; my code is very messy, unorganised, and I've realised that I've been using an array called 'mem', yet kind of used it and kind of haven't? Very strange. Anyways, I've implemented the tokens 'ADD_EQ' and for sub, star and div, of course. So you can now do 
+
+i += 1;
+
+rather than
+
+i = i + 1;
+
+Next shall be... lists!
+
+### 21:11
+Lists have been defeated and implemented!
+
+Time to log off :)

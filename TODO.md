@@ -231,3 +231,8 @@ Next shall be... lists!
 Lists have been defeated and implemented!
 
 Time to log off :)
+
+### 22:57
+I know I said I was logging off but I still have lots of energy.
+
+Anyways, I implemented list accessing, like list[index, index2].

@@ -54,7 +54,8 @@ enum _STACK_TYPE_
     FUNCTION_CALL, ARGUMENTS, ID_LINKER, FRACTIONAL,
     SCOPE, STATEMENT, CONDITION, _IF, _ELSE, 
     _AND, _OR, _NOT, _GTOET, _LTOET, _DEF_FN,
-    LOOP, ADDEQ, SUBEQ, STAREQ, DIVEQ, LIST
+    LOOP, ADDEQ, SUBEQ, STAREQ, DIVEQ, LIST,
+    LIST_ACC
 };
 
 enum _DATATYPE_
@@ -86,7 +87,8 @@ const char *stack_type_names[] = {
     "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
     "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
     "AND", "OR", "NOT", "GTOET", "LTOET", "DEF_FN",
-    "ULOOP", "PLUSEQ", "MINUSEQ", "STAREQ", "DIVEQ"
+    "ULOOP", "PLUSEQ", "MINUSEQ", "STAREQ", "DIVEQ",
+    "LIST", "LIST_ACC"
 };
 
 const char *utypes[] = {

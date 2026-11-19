@@ -196,3 +196,9 @@ Perhaps a while loop? Or for loop? Or do I just still with a more general 'until
 I think I'm going to go with defining functions!
 
 Time to continue development.
+
+### 15:28
+I've also decided on implementing the 'return' token.
+
+### 15:55
+It appears that I have implemented the ability to define functions neow. It was quite simple, but many things like this will be. For example, a while loop is checking for a while token, creating a NodeMaster with 'while' as its type, then taking a condition, then a scope, and thats it. The hard part is actually running through the code... But this part is quite easy. Unless you've got to search for a '-1' in 1000 lines of code, that is.

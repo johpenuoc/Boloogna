@@ -15,7 +15,7 @@ const char *type_names[] = {
     
     "AND", "OR", "NOT", "GOTO", "UNTIL", "IF", "ELSE",
     
-    "NUMBER", "STRING",
+    "NUMBER", "STRING", "DEF_FN",
     
     "EQUIVALENT", "GTHAN_OR_EQUAL_TO", "LTHAN_OR_EQUAL_TO",
     "NOT_EQUAL_TO",
@@ -27,7 +27,7 @@ const char *stack_type_names[] = {
     "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
     "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
     "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
-    "AND", "OR", "NOT", "GTOET", "LTOET"
+    "AND", "OR", "NOT", "GTOET", "LTOET", "DEF_FN"
 };
 
 const char *utype_names[] = {
@@ -90,6 +90,11 @@ int main(int argc, char **argv)
     
     List token_list = tokenize(file);
     Token *token = (Token *)(token_list.element);
+    
+    for (int i = 0; i < token_list.length - 1; ++i)
+        {
+            printf("[%s] \t %s\n", type_names[token[i].type], token[i].stor);
+        }
     
     NodeMaster _stack = stack(&token_list);
     free(token_list.element);

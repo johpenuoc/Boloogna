@@ -175,3 +175,16 @@ Next-up for development: nots, gthan, lthan
 
 ### 20:58
 I got the latter two working. NOT... not so far xD. Anyawys, off to bed.
+
+## 19/11/26
+### 15:03
+I will continue developement on the NOT token. 
+
+I want it to work very simply:
+- ! before anything inversts it (!a)
+- ! before '(' inverts the expression.
+- An invert is to change true to false 
+and false to true.
+
+### 15:16
+I think I've implemented it? I mean, I used the same logic as LPAREN and RPAREN. You just have to surround whatever it is you're inversing with '()'. If it comes accross a NOT, it just checks for LPAREN next and calls another parse_expr function. Seems pretty simple. Hopefully it's robust!

@@ -142,9 +142,27 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     mmstack.utype = NODES;
                     mmstack.UNION.Nodes.nodes = NULL;
                     mmstack.UNION.Nodes.nodeln = 0;
-                    mmstack.UNION.Nodes.type = ASSIGNMENT;
+                    mmstack.UNION.Nodes.type = _NOT;
                     
-                    // ill carry this one on tomorrow.
+                    // THE NEXT TOKEN MUST BE LPAREN
+                    // [NOT] is syntactically like a 
+                    // function. It must be used as:
+                    // if !(condition) {} 
+                    // it will only invert what is 
+                    // within [LPAREN] [expr] [RPAREN]
+                    
+                    (*token_cnt) += 2;
+                    
+                    NodeMaster _tmp = parse_expr(tokens, token_cnt, mem, memsz);
+                    mmstacksz += sizeof(_tmp);
+                    mmstack.UNION.Nodes.nodes = realloc(mmstack.UNION.Nodes.nodes, mmstacksz);
+                    mmstack.UNION.Nodes.nodes[mmstack.UNION.Nodes.nodeln] = _tmp;
+                    mmstack.UNION.Nodes.nodeln++;
+                    
+                    umem(mem, mmstack, memsz);
+                    
+                    (*token_cnt)--;
+                    
                 }
             else if (token.type == ADD || token.type == SUB || token.type == STAR || token.type == DIV || token.type == AND || token.type == OR || token.type == EQUIVALENT || token.type == GTHAN_OR_EQUAL_TO || token.type == LTHAN_OR_EQUAL_TO)
                 {

@@ -256,6 +256,7 @@ List tokenize(FILE *file)
                                     else if (strcmp(curr, "if") == 0) tokens[token_cnt - 1].type = IF;
                                     else if (strcmp(curr, "else") == 0) tokens[token_cnt - 1].type = ELSE;
                                     else if (strcmp(curr, "fn") == 0) tokens[token_cnt - 1].type = DEF_FN;
+                                    else if (strcmp(curr, "ret") == 0) tokens[token_cnt - 1].type = RETURN;
                                     else
                                         {
                                             tokens[token_cnt - 1].type = IDENTIFIER;

@@ -14,6 +14,7 @@
 // especially given that im not used to C
 // ==========================================
 
+NodeMaster parse_return(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_list_acc(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_list(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_until(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
@@ -164,7 +165,7 @@ NodeMaster parse_expr(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
                     mmstack.utype = NODES;
                     mmstack.UNION.Nodes.nodes = NULL;
                     mmstack.UNION.Nodes.nodeln = 0;
-                    mmstack.UNION.Nodes.type = ASSIGNMENT;
+                    mmstack.UNION.Nodes.type = OPERATION;
                     
                     // fetch the previous token from memory
                     NodeMaster prev_token = mem->UNION.Nodes.nodes[mem->UNION.Nodes.nodeln - 1];
@@ -618,6 +619,30 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
                     mstack.UNION.Nodes.nodeln++;*/
                     
                     return mstack;
+                case RETURN:
+                    {
+                        NodeMaster mmstack = parse_return(tokens, token_cnt, mem, memsz);
+                        
+                        // append it to the stack       
+                        mstacksz += sizeof(mmstack);
+                        mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
+                        mstack.UNION.Nodes.nodeln++;
+                        
+                        (*token_cnt)--;
+                    }
+                    break;
+                case LBRACKET:
+                    {
+                        NodeMaster mmstack = parse_list_acc(tokens, token_cnt, mem, memsz);
+                        
+                        // append it to the stack       
+                        mstacksz += sizeof(mmstack);
+                        mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
+                        mstack.UNION.Nodes.nodeln++; 
+                    }
+                    break;
                 case UNTIL:
                     {
                         NodeMaster mmstack = parse_until(tokens, token_cnt, mem, memsz);
@@ -811,7 +836,7 @@ NodeMaster parse_list(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *me
     mstack.utype = NODES;
     mstack.UNION.Nodes.nodes = NULL;
     mstack.UNION.Nodes.nodeln = 0;
-    mstack.UNION.Nodes.type = SCOPE;
+    mstack.UNION.Nodes.type = LIST;
     
     Token token = tokens[*token_cnt];
     
@@ -850,6 +875,33 @@ NodeMaster parse_list_acc(Token *tokens, int *token_cnt, NodeMaster *mem, size_t
     sto_mstack(&mstack, &mstacksz, list_indexes);
     
     return mstack;  
+}
+
+NodeMaster parse_return(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz)
+{
+    size_t mstacksz = 0;
+    NodeMaster mstack;
+    mstack.utype = NODES;
+    mstack.UNION.Nodes.nodes = NULL;
+    mstack.UNION.Nodes.nodeln = 0;
+    mstack.UNION.Nodes.type = RETURN;
+    
+    NodeMaster ret;
+    ret.utype = NODE;
+    ret.UNION.Node.type = tokens[*token_cnt].type;
+    _strcpy(&ret, tokens[*token_cnt].stor);
+    sto_mstack(&mstack, &mstacksz, ret);
+    
+    (*token_cnt)++;
+    
+    // RETURNS MUST HAVE () SURROUND THE VALUES
+    // E.G.
+    // ret (val1, val2 * x);
+    NodeMaster ret_vals = parse_expr(tokens, token_cnt, mem, memsz);
+    
+    sto_mstack(&mstack, &mstacksz, ret_vals);
+    
+    return mstack;
 }
 
 NodeMaster stack(List *tokens)

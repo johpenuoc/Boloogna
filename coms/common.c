@@ -35,6 +35,7 @@ enum _TYPE_
     EQUAL, POWER, GTHAN, LTHAN,
     
     AND, OR, NOT, GOTO, UNTIL, IF, ELSE,
+    RETURN,
     
     NUMBER, STRING, DEF_FN,
     
@@ -55,7 +56,7 @@ enum _STACK_TYPE_
     SCOPE, STATEMENT, CONDITION, _IF, _ELSE, 
     _AND, _OR, _NOT, _GTOET, _LTOET, _DEF_FN,
     LOOP, ADDEQ, SUBEQ, STAREQ, DIVEQ, LIST,
-    LIST_ACC
+    LIST_ACC, OPERATION
 };
 
 enum _DATATYPE_
@@ -72,6 +73,7 @@ const char *type_names[] = {
     "POWER", "GTHAN", "LTHAN",
     
     "AND", "OR", "NOT", "GOTO", "UNTIL", "IF", "ELSE",
+    "RETURN",
     
     "NUMBER", "STRING", "DEF_FN",
     
@@ -88,7 +90,7 @@ const char *stack_type_names[] = {
     "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
     "AND", "OR", "NOT", "GTOET", "LTOET", "DEF_FN",
     "ULOOP", "PLUSEQ", "MINUSEQ", "STAREQ", "DIVEQ",
-    "LIST", "LIST_ACC"
+    "LIST", "LIST_ACC", "OPERATION"
 };
 
 const char *utypes[] = {

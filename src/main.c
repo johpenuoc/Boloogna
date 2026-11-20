@@ -63,10 +63,12 @@ int main(int argc, char **argv)
     // ============COMPILER STAGES============
     
     List token_list = tokenize(file);
-    Token *token = (Token *)(token_list.element);
+    //Token *token = (Token *)(token_list.element);
     
     NodeMaster _stack = stack(&token_list);
     free(token_list.element);
+    
+    NodeMaster ir = compile(&_stack);
     
     int depth;
     depth = 0;

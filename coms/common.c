@@ -12,19 +12,21 @@ enum _UTYPE_
     NODE, NODES
 };
 
-enum _LOW_PRIORITY_
+enum _COMMANDS_
 {
-    _ADD, _SUB
-};
-
-enum _MED_PRIORITY_
-{
-    _STAR, _DIV
-};
-
-enum _HIGH_PRIORITY_
-{
-    _LPAREN
+    LOAD, 
+    
+    STOR,
+    
+    PUSH,
+    
+    _ADD,
+    
+    _SUB,
+    
+    _MUL,
+    
+    _DIV,
 };
 
 enum _TYPE_ 
@@ -52,6 +54,13 @@ enum _TYPE_
     SCOPE, STATEMENT, CONDITION, GTOET, LTOET,
     LOOP, LIST, LIST_ACC, OPERATION, CLASS, INHERITS,
     META_SCOPE
+};
+
+enum _COMMAND_
+{
+    _ADD, _SUB, _MUL, _DIV,
+    
+    _PUSH, _CALL
 };
 
 enum _DATATYPE_
@@ -145,6 +154,31 @@ typedef struct TAG
     
 } NodeMaster;
 
+/*typedef struct
+{
+    enum _DATATYPE_ dtype;
+    union
+    {
+        char *string;
+        int *inum;
+        double *fnum;
+    } val;
+    
+} ARG;
+
+typedef struct 
+{
+    enum _COMMAND_ cmdtype;
+    Arg *args;
+    int argln;
+    size_t argsz;
+} CMD;*/
+
+typedef struct 
+{
+    enum _COMMAND_ cmdtype;
+    int *argln;
+} CMD;
 // ==============================
 // ==============================
 

@@ -16,20 +16,23 @@ enum _UTYPE_
     NODE, NODES
 };
 
-enum _LOW_PRIORITY_
+enum _COMMANDS_
 {
-    _ADD, _SUB
+    LOAD, 
+    
+    STOR,
+    
+    PUSH,
+    
+    _ADD,
+    
+    _SUB,
+    
+    _MUL,
+    
+    _DIV,
 };
 
-enum _MED_PRIORITY_
-{
-    _STAR, _DIV
-};
-
-enum _HIGH_PRIORITY_
-{
-    _LPAREN
-};
 
 enum _TYPE_ 
 {
@@ -102,6 +105,13 @@ typedef struct TAG
     } UNION;
     
 } NodeMaster;
+
+typedef struct 
+{
+    enum _COMMAND_ cmdt;
+    int *argln;
+    char *val;
+} CMD;
 
 void debugp(char *s);
 bool is_in(char *string, char c, int string_length);

@@ -1253,18 +1253,15 @@ NodeMaster stack(List *tokens)
                         {
                             NodeMaster mstack = parse_list_acc(_tokens, ptoken_cnt, &mem, &memsz);
                             // append it to the stack   
-                            // PROBLEM HERE    
-                            printf("%s\n", _tokens[token_cnt].stor);
                             stacksz += sizeof(mstack);
                             _stack.UNION.Nodes.nodes = realloc(_stack.UNION.Nodes.nodes, stacksz);
                             _stack.UNION.Nodes.nodes[_stack.UNION.Nodes.nodeln] = mstack;
                             _stack.UNION.Nodes.nodeln++; 
                         }
-                    else if (NEXT_TOKEN_TYPE == EQUAL)
+                    else if (NEXT_TOKEN_TYPE == EQUAL || NEXT_TOKEN_TYPE == ADD_EQ || NEXT_TOKEN_TYPE == SUB_EQ || NEXT_TOKEN_TYPE == STAR_EQ || NEXT_TOKEN_TYPE == DIV_EQ)
                         {
                             NodeMaster mstack = parse_assignment(_tokens, ptoken_cnt, &mem, &memsz);
                             // append it to the stack   
-                            // PROBLEM HERE    
                             stacksz += sizeof(mstack);
                             _stack.UNION.Nodes.nodes = realloc(_stack.UNION.Nodes.nodes, stacksz);
                             _stack.UNION.Nodes.nodes[_stack.UNION.Nodes.nodeln] = mstack;

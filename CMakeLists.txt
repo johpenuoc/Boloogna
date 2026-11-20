@@ -10,6 +10,7 @@ PRIVATE
     src/syntax/scan.c
     src/syntax/parser.c
     src/syntax/compiler.c
+    vpu/vpu.c
     src/err/rerr.c
 )
 
@@ -17,6 +18,7 @@ target_include_directories(main PRIVATE
     .
     src
     coms
+    vpu
     src/syntax
     src/err
 )

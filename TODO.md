@@ -273,3 +273,45 @@ I've implemented a lot into the parer; classes, functions, function calls, if-el
 
 
 ============================================
+
+### 19:17
+I went and ate, walked around, but since then I haven't been coding. Just thinking.
+
+I do have an idea.
+
+The stack is going to be converted into a stream of 'commands'. For example,
+
+x = y * 3;
+
+This would be converted into the stack
+
+[=][x][[*][y][3]]
+
+Then this would be converted into the stream
+
+LOAD y, MUL mem[y] 3, PUSH, STORE x
+
+'LOAD' loads something from memory, 'MUL' multiplies two numbers, 'PUSH' puts the last value into memory, 'STORE' puts the latest item in memory and stores it in whatever variable.
+
+ x += function(y) * (5 - 0.5);
+ 
+ LOAD (x), MUL ((LOAD (y), PUSH, LOAD (function)), PUSH, SUB (5 -0.5), ),... I can't be bothered to do the rest, but you get the idea.
+ 
+ or maybe...
+ 
+ x = y * 3;
+ 
+LOAD y
+PUSH 3   
+MUL      
+STOR x
+
+a = y * (func(x) * 0.5); -->
+STO , a , MUL , LOAD , y: MUL , FNCALL , x: LITERAL , 0.5:::
+
+### 20:58
+Okidokie. I've thought this through a little.
+
+There will be a CMD struct, which contains a type, how many arguments it expects, and the token associated with it.
+
+When initially reading the raw 'bytecode' (it won't be quite bytecode at this stage), it will use ':' to determine when the arguments for a COMMAND has ended. Similar to LPAREN and RPAREN in expressions. Once I get it to this stage, I will convert it into true bytecode. This is an intermedite stage between bytecode and the stack. 

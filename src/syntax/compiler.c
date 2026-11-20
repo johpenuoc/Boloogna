@@ -59,6 +59,16 @@ CMD spawn(enum _COMMAND_ _cmdtype, int _argln, char *token)
     return cmd;
 }
 
+CMD spawn_splitter()
+{
+    CMD split;
+    split.cmdtype = SPLIT;
+    *split.argln = 0;
+    cmd.val = ":";
+    
+    return split;
+}
+
 void traverse(NodeMaster *stack, int *depth, CMD* cmds, size_t *cmdsz, int *cmdln)
 {
     if (stack->utype == NODE)

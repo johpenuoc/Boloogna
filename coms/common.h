@@ -16,21 +16,13 @@ enum _UTYPE_
     NODE, NODES
 };
 
-enum _COMMANDS_
+enum _COMMAND_
 {
-    LOAD, 
+    _ADD, _SUB, _MUL, _DIV,
     
-    STOR,
+    _PUSH, _CALL,
     
-    PUSH,
-    
-    _ADD,
-    
-    _SUB,
-    
-    _MUL,
-    
-    _DIV,
+    SPLIT
 };
 
 

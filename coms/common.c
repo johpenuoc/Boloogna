@@ -60,7 +60,9 @@ enum _COMMAND_
 {
     _ADD, _SUB, _MUL, _DIV,
     
-    _PUSH, _CALL
+    _PUSH, _CALL,
+    
+    SPLIT
 };
 
 enum _DATATYPE_

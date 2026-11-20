@@ -262,4 +262,14 @@ a = Something;"
 This is how they're going to be structured.
 
 ### 16:14
-Classes have now been implemeneted!!
+Classes have now been implemeneted!
+
+### 16:22
+I've implemented a lot into the parer; classes, functions, function calls, if-else statements, loops, linkers, expressions, variables, scopes... So perhaps I should start on the next stage: processing this stack-data into commands for the interpreter to go through!
+
+### 16:35
+=== planing how to compile this properly ===
+
+
+
+============================================

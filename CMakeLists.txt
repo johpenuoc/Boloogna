@@ -9,6 +9,7 @@ PRIVATE
     coms/common.c
     src/syntax/scan.c
     src/syntax/parser.c
+    src/syntax/compiler.c
     src/err/rerr.c
 )
 

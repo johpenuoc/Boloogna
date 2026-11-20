@@ -746,6 +746,18 @@ NodeMaster parse_meta_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size
                             mstack.UNION.Nodes.nodeln++;
                         }
                     break;
+                case DEF_FN:
+                    {
+                        (*token_cnt)++;
+                        NodeMaster mmstack = parse_dfn(tokens, token_cnt, mem, memsz);
+                        
+                        // append it to the stack       
+                        mstacksz += sizeof(mmstack);
+                        mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
+                        mstack.UNION.Nodes.nodeln++;
+                    }
+                    break;
                 case LPAREN:
                     // parse_expr
                     break;
@@ -922,6 +934,18 @@ NodeMaster parse_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *m
                             mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
                             mstack.UNION.Nodes.nodeln++;
                         }
+                    break;
+                case DEF_FN:
+                    {
+                        (*token_cnt)++;
+                        NodeMaster mmstack = parse_dfn(tokens, token_cnt, mem, memsz);
+                        
+                        // append it to the stack       
+                        mstacksz += sizeof(mmstack);
+                        mstack.UNION.Nodes.nodes = realloc(mstack.UNION.Nodes.nodes, mstacksz);
+                        mstack.UNION.Nodes.nodes[mstack.UNION.Nodes.nodeln] = mmstack;
+                        mstack.UNION.Nodes.nodeln++;
+                    }
                     break;
                 case LPAREN:
                     // parse_expr

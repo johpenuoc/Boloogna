@@ -235,6 +235,7 @@ List tokenize(FILE *file)
                     else if (strcmp(curr, "^") == 0) tokens[token_cnt - 1].type = POWER;
                     else if (strcmp(curr, ">") == 0) tokens[token_cnt - 1].type = GTHAN;
                     else if (strcmp(curr, "<") == 0) tokens[token_cnt - 1].type = LTHAN;
+                    else if (strcmp(curr, "@") == 0) tokens[token_cnt - 1].type = METADATA;
                     
                     else if (strcmp(curr, "==") == 0) tokens[token_cnt - 1].type = EQUIVALENT;
                     else if (strcmp(curr, ">=") == 0) tokens[token_cnt - 1].type = GTHAN_OR_EQUAL_TO;
@@ -257,6 +258,8 @@ List tokenize(FILE *file)
                                     else if (strcmp(curr, "else") == 0) tokens[token_cnt - 1].type = ELSE;
                                     else if (strcmp(curr, "fn") == 0) tokens[token_cnt - 1].type = DEF_FN;
                                     else if (strcmp(curr, "ret") == 0) tokens[token_cnt - 1].type = RETURN;
+                                    else if (strcmp(curr, "cls") == 0) tokens[token_cnt - 1].type = DEF_CLS;
+                                    else if (strcmp(curr, "_init") == 0) tokens[token_cnt - 1].type = INIT;
                                     else
                                         {
                                             tokens[token_cnt - 1].type = IDENTIFIER;
@@ -308,6 +311,8 @@ List tokenize(FILE *file)
     combine_tokens(tokens, token_cnt_ptr, SUB, EQUAL, SUB_EQ);
     combine_tokens(tokens, token_cnt_ptr, DIV, EQUAL, DIV_EQ);
     combine_tokens(tokens, token_cnt_ptr, STAR, EQUAL, STAR_EQ);
+    
+    combine_tokens(tokens, token_cnt_ptr, COLON, COLON, INHERIT);
     
         
     

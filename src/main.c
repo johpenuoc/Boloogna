@@ -26,7 +26,7 @@ void printn(NodeMaster *stack, int *depth, char *s)
         {
             printf("\033[31mSTACK: \033[0m");
             printf("\033[31m[\033[0m");
-            printf("%s", stack_type_names[stack->UNION.Nodes.type]);//, stack->UNION.Nodes.nodeln);
+            printf("%s", type_names[stack->UNION.Nodes.type]);//, stack->UNION.Nodes.nodeln);
             printf("\033[31m]\033[0m\n");
             (*depth)++;
             //printf("[");

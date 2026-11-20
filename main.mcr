@@ -1,3 +1,19 @@
+cls Something :: OtherSomething
+{
+    @ _init
+    {
+        this.obj1 = "hello";
+        this.obj2 = 10;
+    }
+    
+    fn change_obj1(change_to)
+        {
+            this.obj1 = change_to;
+        }
+}
+
+a = Something;
+
 fn power(x, p)
 {
     i = 1;

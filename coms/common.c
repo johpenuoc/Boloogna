@@ -37,26 +37,21 @@ enum _TYPE_
     AND, OR, NOT, GOTO, UNTIL, IF, ELSE,
     RETURN,
     
-    NUMBER, STRING, DEF_FN,
+    NUMBER, STRING, DEF_FN, DEF_CLS,
     
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
     LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
+    INHERIT, METADATA, INIT,
     
     ADD_EQ, SUB_EQ, STAR_EQ, DIV_EQ,
     
-    IDENTIFIER, COMMENT
-};
-
-// these are _TYPE_s which are not found in code but are found after
-// stack generation
-enum _STACK_TYPE_
-{
+    IDENTIFIER, COMMENT,
+    
     PROGRAM, MEMORY, EXPRESSION, ASSIGNMENT, 
     FUNCTION_CALL, ARGUMENTS, ID_LINKER, FRACTIONAL,
-    SCOPE, STATEMENT, CONDITION, _IF, _ELSE, 
-    _AND, _OR, _NOT, _GTOET, _LTOET, _DEF_FN,
-    LOOP, ADDEQ, SUBEQ, STAREQ, DIVEQ, LIST,
-    LIST_ACC, OPERATION
+    SCOPE, STATEMENT, CONDITION, GTOET, LTOET,
+    LOOP, LIST, LIST_ACC, OPERATION, CLASS, INHERITS,
+    META_SCOPE
 };
 
 enum _DATATYPE_
@@ -67,20 +62,28 @@ enum _DATATYPE_
 
 const char *type_names[] = {
     "LPAREN", "RPAREN", "LBRACE", "RBRACE",
-    "LBRACKET", "RBRACKET",
-    "COMMA", "DECIMAL", "COLON", "SCOLON", 
-    "ADD", "SUB", "STAR", "DIV", "EQUAL", 
-    "POWER", "GTHAN", "LTHAN",
+    "LBRACKET", "RBRACKET", "COMMA", "DECIMAL", 
+    "COLON", "SCOLON", "ADD", "SUB", "STAR", "DIV", 
+    "EQUAL", "POWER", "GTHAN", "LTHAN",
     
     "AND", "OR", "NOT", "GOTO", "UNTIL", "IF", "ELSE",
     "RETURN",
     
-    "NUMBER", "STRING", "DEF_FN",
+    "NUMBER", "STRING", "DEF_FN", "DEF_CLS",
     
-    "EQUIVALENT", "GTHAN_OR_EQUAL_TO", "LTHAN_OR_EQUAL_TO",
-    "NOT_EQUAL_TO", "ADD_EQ", "SUB_EQ", "STAR_EQ", "DIV_EQ",
+    "EQUIVALENT", "GTHAN_OR_EQUAL_TO",
+    "LTHAN_OR_EQUAL_TO", "NOT_EQUAL_TO",
+    "INHERIT", "METADATA", "INIT",
     
-    "IDENTIFIER", "COMMENT", "PROGRAM", "MEMORY"
+    "ADD_EQ", "SUB_EQ", "STAR_EQ", "DIV_EQ",
+    
+    "IDENTIFIER", "COMMENT",
+    
+    "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
+    "FUNCTION_CALL", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
+    "SCOPE", "STATEMENT", "CONDITION", "GTOET", "LTOET",
+    "LOOP", "LIST", "LIST_ACC", "OPERATION", "CLASS", "INHERITS",
+    "META_SCOPE"
 
 };
 
@@ -90,7 +93,8 @@ const char *stack_type_names[] = {
     "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
     "AND", "OR", "NOT", "GTOET", "LTOET", "DEF_FN",
     "ULOOP", "PLUSEQ", "MINUSEQ", "STAREQ", "DIVEQ",
-    "LIST", "LIST_ACC", "OPERATION"
+    "LIST", "LIST_ACC", "OPERATION", "CLASS", "INHERITS",
+    "METADATA", "META_SCOPE"
 };
 
 const char *utypes[] = {
@@ -132,7 +136,7 @@ typedef struct TAG
         
         struct
         {
-            enum _STACK_TYPE_ type;
+            enum _TYPE_ type;
             struct TAG *nodes;
             int nodeln;
         } Nodes;
@@ -143,17 +147,6 @@ typedef struct TAG
 
 // ==============================
 // ==============================
-
-enum _TYPE_ _type_to_stack_type(enum _TYPE_ type)
-{
-    if (type == AND) return _AND;
-    else if (type == OR) return _OR;
-    else
-        {
-            printf("Doesn't exist\n");
-            return 1;
-        }
-}
 
 void debugp(char *s)
 {

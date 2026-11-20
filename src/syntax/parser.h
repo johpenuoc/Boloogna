@@ -19,6 +19,9 @@ NodeMaster parse_dfn(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *mem
 NodeMaster parse_until(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_list_acc(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 NodeMaster parse_return(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
+NodeMaster parse_meta_scope(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
+NodeMaster parse_metadata(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
+NodeMaster parse_class(Token *tokens, int *token_cnt, NodeMaster *mem, size_t *memsz);
 
 NodeMaster stack(List *tokens);
 

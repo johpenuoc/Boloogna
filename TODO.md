@@ -236,3 +236,30 @@ Time to log off :)
 I know I said I was logging off but I still have lots of energy.
 
 Anyways, I implemented list accessing, like list[index, index2].
+
+## 20/11/26
+### 14:59
+I've just logged on. I'm trying to not make this a diary, but it's somewhat become one...
+
+Next up for development are classes!
+
+"cls Something :: OtherSomething
+{
+    @ _init
+    {
+        this.obj1 = "hello";
+        this.obj2 = 10;
+    }
+    
+    fn change_obj1(change_to)
+        {
+            this.obj1 = change_to;
+        }
+}
+
+a = Something;"
+
+This is how they're going to be structured.
+
+### 16:14
+Classes have now been implemeneted!!

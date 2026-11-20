@@ -41,25 +41,21 @@ enum _TYPE_
     AND, OR, NOT, GOTO, UNTIL, IF, ELSE,
     RETURN,
     
-    NUMBER, STRING, DEF_FN,
+    NUMBER, STRING, DEF_FN, DEF_CLS,
     
     EQUIVALENT, GTHAN_OR_EQUAL_TO,
     LTHAN_OR_EQUAL_TO, NOT_EQUAL_TO,
+    INHERIT, METADATA, INIT,
     
     ADD_EQ, SUB_EQ, STAR_EQ, DIV_EQ,
     
-    IDENTIFIER, COMMENT
-};
-
-// _GTOET / _LTOET mean GTHAN_OR_EQUAL_TO and LTHAN_OR_EQUAL_TO, respectively
-enum _STACK_TYPE_
-{
+    IDENTIFIER, COMMENT,
+    
     PROGRAM, MEMORY, EXPRESSION, ASSIGNMENT, 
     FUNCTION_CALL, ARGUMENTS, ID_LINKER, FRACTIONAL,
-    SCOPE, STATEMENT, CONDITION, _IF, _ELSE, 
-    _AND, _OR, _NOT, _GTOET, _LTOET, _DEF_FN,
-    LOOP, ADDEQ, SUBEQ, STAREQ, DIVEQ, LIST,
-    LIST_ACC, OPERATION
+    SCOPE, STATEMENT, CONDITION, GTOET, LTOET,
+    LOOP, LIST, LIST_ACC, OPERATION, CLASS, INHERITS,
+    META_SCOPE
 };
 
 enum _DATATYPE_
@@ -98,7 +94,7 @@ typedef struct TAG
         
         struct
         {
-            enum _STACK_TYPE_ type;
+            enum _TYPE_ type;
             struct TAG *nodes;
             int nodeln;
         } Nodes;
@@ -107,7 +103,6 @@ typedef struct TAG
     
 } NodeMaster;
 
-enum _TYPE_ _type_to_stack_type(enum _TYPE_ type);
 void debugp(char *s);
 bool is_in(char *string, char c, int string_length);
 bool only_numbers(char *string, int string_length);

@@ -68,12 +68,13 @@ int main(int argc, char **argv)
     NodeMaster _stack = stack(&token_list);
     free(token_list.element);
     
-    NodeMaster ir = compile(&_stack);
-    
     int depth;
     depth = 0;
     char *s;
     printn(&_stack, &depth, s);
+    
+    CMD *ir = compile(&_stack);
+    debugp("here?");
     
     // =======================================
     

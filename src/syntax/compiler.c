@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "coms/common.h"
 
@@ -26,24 +27,13 @@ STACK: [ASSIGNMENT]
 
 void acmd(CMD *cmds, size_t *cmdsz, int *cmdln, CMD obj)
 {
-    *cmdsz += sizeof(obj);
+    (*cmdsz) += sizeof(obj);
+    cmds = realloc(cmds, *cmdsz);
     cmds[*cmdln] = obj;
     (*cmdln)++;
-    
 }
 
-CMD setcmd(enum _COMMAND_ _cmdtype, ARG *_args, int _argln, size_t *_argsz)
-{
-    CMD cmd;
-    cmd.cmdtype = _cmdtype;
-    cmd.argln = *_argln;
-    cmd.argsz = *_argsz;
-    cmd.args = _args;
-    
-    return cmd;
-}
-
-CMD spawn(enum _COMMAND_ _cmdtype, int _argln, char *token)
+CMD spawn(enum _COMMAND_ cmdtype, int _argln, char *token)
 {
     /*CMD cmd;
     cmd.cmdtype = _cmdtype;
@@ -52,114 +42,106 @@ CMD spawn(enum _COMMAND_ _cmdtype, int _argln, char *token)
     cmd.args = NULL;*/
     
     CMD cmd;
-    cmd.cmdtype = _cmdtype;
-    *cmd.argln = _argln;
-    cmd.val = token;
+    cmd.cmdt = cmdtype;
+    cmd.argln = _argln;
+    cmd.val = malloc(strlen(token) + 1);
+    strcpy(cmd.val, token);
     
     return cmd;
 }
 
-CMD spawn_splitter()
+/*CMD spawn_splitter()
 {
     CMD split;
-    split.cmdtype = SPLIT;
-    *split.argln = 0;
-    cmd.val = ":";
+    split.cmdt = SPLIT;
+    split.argln = 0;
+    split.val = ":";
     
     return split;
-}
+}*/
 
-void traverse(NodeMaster *stack, int *depth, CMD* cmds, size_t *cmdsz, int *cmdln)
+//CMD* cmds, size_t *cmdsz, int *cmdln
+void traverse(NodeMaster *stack, enum _TYPE_ ptype, CMD* cmds, size_t *cmdsz, int *cmdln)
 {
     if (stack->utype == NODE)
         {
             const enum _TYPE_ STYPE = stack->UNION.Node.type;
             char *val = stack->UNION.Node.stor;
+            enum _COMMAND_ ctype;
+            
             switch (STYPE)
                 {
                     case EQUAL:
                         {
-                            CMD sto = spawn(STO, 2, val);
-                            acmd(cmds, cmdsz, cmdln, sto);
+                            ctype = _STO;
                         }
                         break;
+                    case IDENTIFIER:
+                        {
+                            if (ptype == FUNCTION_CALL) ctype = _CALL;
+                            else ctype = _ID;
+                        }
+                        break;
+                    case ADD:
+                        {
+                            ctype = _ADD;
+                        }
+                        break;
+                    case SUB:
+                        {
+                            ctype = _SUB;
+                        }
+                        break;
+                    case DIV:
+                        {
+                            ctype = _DIV;
+                        }
+                        break;
+                    case STAR:
+                        {
+                            ctype = _MUL;
+                        }
+                        break;
+                    case NUMBER:
+                        {
+                            ctype = _LITERAL;
+                        }
+                        break;
+                    default:
+                        //printf("default: %s\n", type_names[stack->UNION.Nodes.type]);
+                        break;
+                    
                 }
+            CMD c = spawn(ctype, 2, val);
+            acmd(cmds, cmdsz, cmdln, c);
         }
     else
-        {
-            NodeMaster nodes = *stack;
-            const enum _TYPE_ TYPE = nodes.UNION.Nodes.type;
-            
-            switch (TYPE) {
-                case EXPRESSION:
-                    break;
-                case ASSIGNMENT:
-                    
-                    break;
-                case FUNCTION_CALL:
-    
-                    break;
-                case ARGUMENTS:
-    
-                    break;
-                case ID_LINKER:
-    
-                    break;
-                case FRACTIONAL:
-    
-                    break;
-                case SCOPE:
-    
-                    break;
-                case STATEMENT:
-    
-                    break;
-                case CONDITION:
-    
-                    break;
-                case GTOET:
-    
-                    break;
-                case LTOET:
-    
-                    break;
-                case LOOP:
-    
-                    break;
-                case LIST:
-    
-                    break;
-                case LIST_ACC:
-    
-                    break;
-                case OPERATION:
-    
-                    break;
-                case CLASS:
-    
-                    break;
-                case INHERITS:
-    
-                    break;
-                case META_SCOPE:
-    
-                    break;
-                default:
-    
-                    break;
-                } 
-            
-            (*depth)++;
+        {      
+            //(*depth)++;
             for (int i = 0; i < stack->UNION.Nodes.nodeln; ++i)
                 {
+                    enum _TYPE_ ptype = stack->UNION.Nodes.type;
                     NodeMaster node_s = stack->UNION.Nodes.nodes[i];
-                    traverse(&node_s, depth);
+                    traverse(&node_s, ptype, cmds, cmdsz, cmdln);
                 }
-            (*depth)--;
+            //(*depth)--;
         }
 }
 
-NodeMaster compile(NodeMaster *stack)
+CMD *compile(NodeMaster *stack)
 {
+    size_t cmdsz = 0;
+    int cmdln = 0;
+    CMD *cmds = NULL;
+    traverse(stack, PROGRAM, cmds, &cmdsz, &cmdln);
     
+    for (int i = 0; i < cmdln - 1; ++i)
+        {
+            printf("id: %d\n", i);
+            CMD cmd = cmds[i];
+            
+            printf("%s ", cmdt_names[cmd.cmdt]);
+        }
+        
+    return cmds;
 }

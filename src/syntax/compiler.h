@@ -2,11 +2,10 @@
 #define COMPILER_H
 
 void acmd(CMD *cmds, size_t *cmdsz, int *cmdln, CMD obj);
-CMD setcmd(enum _COMMAND_ _cmdtype, ARG *_args, int _argln, size_t *_argsz);
-CMD spawn(enum _COMMAND_ _cmdtype);
+CMD spawn(enum _COMMAND_ cmdtype, int _argln, char *token);
 
-void traverse(NodeMaster *stack, int *depth, CMD* cmds, size_t *cmdsz, int *cmdln);
+void traverse(NodeMaster *stack, enum _TYPE_ ptype, CMD* cmds, size_t *cmdsz, int *cmdln);
 
-NodeMaster compile(NodeMaster *stack);
+CMD *compile(NodeMaster *stack);
 
 #endif

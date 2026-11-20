@@ -10,6 +10,7 @@ extern char *MODE;
 extern char *type_names[];
 extern char *stack_type_names[];
 extern char *utypes[];
+extern char *cmdt_names[];
 
 enum _UTYPE_
 {
@@ -20,7 +21,9 @@ enum _COMMAND_
 {
     _ADD, _SUB, _MUL, _DIV,
     
-    _PUSH, _CALL,
+    _PUSH, _CALL, _STO, _ID,
+    
+    _LITERAL,
     
     SPLIT
 };
@@ -101,7 +104,7 @@ typedef struct TAG
 typedef struct 
 {
     enum _COMMAND_ cmdt;
-    int *argln;
+    int argln;
     char *val;
 } CMD;
 

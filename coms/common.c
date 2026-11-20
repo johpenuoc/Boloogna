@@ -12,21 +12,15 @@ enum _UTYPE_
     NODE, NODES
 };
 
-enum _COMMANDS_
+enum _COMMAND_
 {
-    LOAD, 
+    _ADD, _SUB, _MUL, _DIV,
     
-    STOR,
+    _PUSH, _CALL, _STO, _ID,
     
-    PUSH,
+    _LITERAL,
     
-    _ADD,
-    
-    _SUB,
-    
-    _MUL,
-    
-    _DIV,
+    SPLIT
 };
 
 enum _TYPE_ 
@@ -54,15 +48,6 @@ enum _TYPE_
     SCOPE, STATEMENT, CONDITION, GTOET, LTOET,
     LOOP, LIST, LIST_ACC, OPERATION, CLASS, INHERITS,
     META_SCOPE
-};
-
-enum _COMMAND_
-{
-    _ADD, _SUB, _MUL, _DIV,
-    
-    _PUSH, _CALL,
-    
-    SPLIT
 };
 
 enum _DATATYPE_
@@ -98,14 +83,14 @@ const char *type_names[] = {
 
 };
 
-const char *stack_type_names[] = {
-    "PROGRAM", "MEMORY", "EXPRESSION", "ASSIGNMENT", 
-    "FUNCTION", "ARGUMENTS", "ID_LINKER", "FRACTIONAL",
-    "SCOPE", "STATEMENT", "CONDITION", "IF", "ELSE",
-    "AND", "OR", "NOT", "GTOET", "LTOET", "DEF_FN",
-    "ULOOP", "PLUSEQ", "MINUSEQ", "STAREQ", "DIVEQ",
-    "LIST", "LIST_ACC", "OPERATION", "CLASS", "INHERITS",
-    "METADATA", "META_SCOPE"
+const char *cmdt_names[] = {
+    "_ADD", "_SUB", "_MUL", "_DIV",
+    
+    "_PUSH", "_CALL", "_STO", "_ID",
+    
+    "_LITERAL",
+    
+    "SPLIT"
 };
 
 const char *utypes[] = {
@@ -178,8 +163,9 @@ typedef struct
 
 typedef struct 
 {
-    enum _COMMAND_ cmdtype;
-    int *argln;
+    enum _COMMAND_ cmdt;
+    int argln;
+    char *val;
 } CMD;
 // ==============================
 // ==============================

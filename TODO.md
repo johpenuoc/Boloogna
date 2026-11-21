@@ -315,3 +315,6 @@ Okidokie. I've thought this through a little.
 There will be a CMD struct, which contains a type, how many arguments it expects, and the token associated with it.
 
 When initially reading the raw 'bytecode' (it won't be quite bytecode at this stage), it will use ':' to determine when the arguments for a COMMAND has ended. Similar to LPAREN and RPAREN in expressions. Once I get it to this stage, I will convert it into true bytecode. This is an intermedite stage between bytecode and the stack. 
+
+### 23:35
+I have NO idea why the code isn't working. Been looking at it for ages. It quite literally makes ZERO sense as to why it isn't running... Why can't I access any index in cmds???

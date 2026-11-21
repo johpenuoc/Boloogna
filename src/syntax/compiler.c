@@ -31,6 +31,8 @@ void acmd(CMD *cmds, size_t *cmdsz, int *cmdln, CMD obj)
     cmds = realloc(cmds, *cmdsz);
     cmds[*cmdln] = obj;
     (*cmdln)++;
+    
+    //printf("%s -> ", cmdt_names[cmds[(*cmdln) - 1].cmdt]);
 }
 
 CMD spawn(enum _COMMAND_ cmdtype, int _argln, char *token)
@@ -114,6 +116,7 @@ void traverse(NodeMaster *stack, enum _TYPE_ ptype, CMD* cmds, size_t *cmdsz, in
                 }
             CMD c = spawn(ctype, 2, val);
             acmd(cmds, cmdsz, cmdln, c);
+            printf("size: %d\n", sizeof(cmds[(*cmdln) - 1]));
         }
     else
         {      
@@ -132,13 +135,14 @@ CMD *compile(NodeMaster *stack)
 {
     size_t cmdsz = 0;
     int cmdln = 0;
-    CMD *cmds = NULL;
+    CMD *cmds;
     traverse(stack, PROGRAM, cmds, &cmdsz, &cmdln);
+    
     
     for (int i = 0; i < cmdln - 1; ++i)
         {
             printf("id: %d\n", i);
-            CMD cmd = cmds[i];
+            CMD cmd = *cmds;
             
             printf("%s ", cmdt_names[cmd.cmdt]);
         }
